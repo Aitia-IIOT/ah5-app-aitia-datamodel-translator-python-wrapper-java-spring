@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.4.9</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>ai.aitia.arrowhead</groupId>
+	<artifactId>arrowhead-app-datamodel-translator-python-wrapper</artifactId>
+	<version>1.0.0</version>
+	<name>Aitia Wrapper for Python Datamodel Translator</name>
+	<description>Aitia Wrapper for Python Datamodel Translator using Spring Boot</description>
+	
+	<url>https://github.com/Aitia-IIOT/ah5-app-aitia-datamodel-translator-python-wrapper-java-spring</url>
+	<licenses>
+		<license>
+			<name>TODO</name>
+		</license>
+	</licenses>
+
+	<properties>
+		<java.version>21</java.version>
+		<mvn.compiler.version>3.13.0</mvn.compiler.version>
+		<mvn.compile.target>21</mvn.compile.target>
+		<mvn.resources.version>3.3.1</mvn.resources.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<arrowhead.framework.version>5.1.0</arrowhead.framework.version>
+		<aitia.common.version>1.0.0</aitia.common.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>ai.aitia.arrowhead</groupId>
+			<artifactId>arrowhead-app-common</artifactId>
+			<version>${aitia.common.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>eu.arrowhead</groupId>
+			<artifactId>arrowhead-data-transfer-objects</artifactId>
+			<version>${arrowhead.framework.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
