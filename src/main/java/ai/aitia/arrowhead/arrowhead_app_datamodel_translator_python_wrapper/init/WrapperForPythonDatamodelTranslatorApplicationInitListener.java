@@ -50,9 +50,9 @@ public class WrapperForPythonDatamodelTranslatorApplicationInitListener extends 
 		try {
 			runInitScript(info.getInitScriptLocation());
         } catch (final IOException ex) {
-			throw new InvalidParameterException("Running the initialization python script was unsuccessful: " + ex.getMessage());
+			throw new RuntimeException("Running the initialization python script was unsuccessful: " + ex.getMessage());
         }
-		
+
 		info.setInitScriptHasRun();
 		// register services only after init script has run
 		if (info.getServices() != null) {
@@ -62,7 +62,7 @@ public class WrapperForPythonDatamodelTranslatorApplicationInitListener extends 
 			logger.info("System {} published {} service(s)", sysInfo.getSystemName(), registeredServices.size());
 		}
 	}
-	
+
 	//-------------------------------------------------------------------------------------------------
 	private void runInitScript(final String initScriptLocation) throws ConfigurationException, InterruptedException, IOException {
 		logger.debug("runInitScript started...");
@@ -79,7 +79,7 @@ public class WrapperForPythonDatamodelTranslatorApplicationInitListener extends 
 			throw ex;
         }
     }
-	
+
 	//-------------------------------------------------------------------------------------------------
 	private void registerServiceAfterInitScript(final ServiceModel model) {
 		logger.debug("registerServiceAfterInitScript started...");

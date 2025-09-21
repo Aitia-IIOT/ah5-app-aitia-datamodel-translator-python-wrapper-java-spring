@@ -16,11 +16,13 @@ import javax.naming.ConfigurationException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import ai.aitia.arrowhead.arrowhead_app_datamodel_translator_python_wrapper.WrapperForPythonDatamodelTranslatorConstants;
-import ai.aitia.arrowhead.arrowhead_app_datamodel_translator_python_wrapper.service.enums.DataModelTranslationTask;
+import ai.aitia.arrowhead.arrowhead_app_datamodel_translator_python_wrapper.service.model.DataModelTranslationTask;
+import ai.aitia.arrowhead.arrowhead_app_datamodel_translator_python_wrapper.service.validation.DataModelTranslationServiceValidation;
 import eu.arrowhead.common.exception.InternalServerError;
 import eu.arrowhead.dto.DataModelTranslationInitRequestDTO;
 import eu.arrowhead.dto.DataModelTranslationResultResponseDTO;
@@ -32,30 +34,35 @@ public class DataModelTranslationService {
 
 	//=================================================================================================
 	// members
-	
+
 	@Value(WrapperForPythonDatamodelTranslatorConstants.$TRANSLATION_SCRIPT_LOCATION)
 	private String translationScriptLocation;
-	
+
 	@Value(WrapperForPythonDatamodelTranslatorConstants.$TRANSLATION_INPUT_FOLDER)
 	private String inputFolder;
-	
+
 	@Value(WrapperForPythonDatamodelTranslatorConstants.$TRANSLATION_OUTPUT_FOLDER)
 	private String outputFolder;
 	
+	@Autowired
+	private DataModelTranslationServiceValidation validator;
+
 	private final BlockingQueue<DataModelTranslationTask> jobQueue = new LinkedBlockingQueue<>();
 	private final Map<UUID, DataModelTranslationTask> jobCache = new ConcurrentHashMap<>();
 	private final Map<UUID, String> fileNameCache = new ConcurrentHashMap<>();
-	
+
 	private final Logger logger = LogManager.getLogger(this.getClass());
 
 	//=================================================================================================
 	// methods
-	
+
 	//-------------------------------------------------------------------------------------------------
-    public UUID initTranslation(final DataModelTranslationInitRequestDTO dto) {
+    public UUID initTranslation(final DataModelTranslationInitRequestDTO dto, final String origin) {
     	logger.debug("initTranslationJob started...");
     	
-        DataModelTranslationTask job = new DataModelTranslationTask(dto.inputModelId(), dto.outputModelId(), dto.payload());
+    	final DataModelTranslationInitRequestDTO normalized = validator.validateAndNormalizeDataModelTranslationInitRequestDTO(dto, origin);
+
+        DataModelTranslationTask job = new DataModelTranslationTask(normalized.inputModelId(), normalized.outputModelId(), normalized.payload());
         jobQueue.add(job);
         jobCache.put(job.getUuid(), job);
         return job.getUuid();
@@ -67,26 +74,26 @@ public class DataModelTranslationService {
 
         final DataModelTranslationTask job = jobCache.get(jobId);
         final String result = readTranslatedFile(fileNameCache.get(jobId));
-        return new DataModelTranslationResultResponseDTO(job.getStatus(), result); 
+        return new DataModelTranslationResultResponseDTO(job.getStatus(), result);
     }
-    
+
 	//=================================================================================================
 	// assistant methods
-    
+
     //-------------------------------------------------------------------------------------------------
     private void doTranslationJob(final DataModelTranslationTask job) {
     	// start the job
     	job.setStatus(DataModelTranslationTaskStatus.IN_PROGRESS);
-    	
+
     	// decode the bytes
     	final byte[] bytes = Base64.getDecoder().decode(job.getPayload());
-    	
+
     	final String inputFileName = job.getUuid().toString() + ".bin";
     	String outputFileName = null;
     	try {
     		// save the file
     		Files.write(Paths.get(inputFolder, inputFileName), bytes);
-    	
+
     		// run the script
     		outputFileName = runTranslationScript(inputFileName);
     	} catch (final Exception ex) {
@@ -96,18 +103,18 @@ public class DataModelTranslationService {
     	if (outputFileName != null) {
     		fileNameCache.put(job.getUuid(), outputFileName);
     	}
-    	
+
     	// the job is done
     	job.setStatus(DataModelTranslationTaskStatus.DONE);
     }
-    
+
   //-------------------------------------------------------------------------------------------------
     private String runTranslationScript(final String inputFileName) throws ConfigurationException, InterruptedException, IOException {
 
         try {
             final ProcessBuilder initScriptProcessBuilder = new ProcessBuilder("python", translationScriptLocation, Paths.get(inputFolder, inputFileName).toString());
             final Process initScriptProcess = initScriptProcessBuilder.start();
-            
+
             String outputFileName = null;
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(initScriptProcess.getInputStream()))) {
             	outputFileName = reader.readLine();
@@ -121,7 +128,7 @@ public class DataModelTranslationService {
 			throw ex;
         }
     }
-    
+
     //-------------------------------------------------------------------------------------------------
     private String readTranslatedFile(final String filename) {
     	

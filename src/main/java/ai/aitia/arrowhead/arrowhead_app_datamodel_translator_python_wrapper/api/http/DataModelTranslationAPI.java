@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,17 +39,17 @@ public class DataModelTranslationAPI {
 
 	//=================================================================================================
 	// members
-	
+
 	@Autowired
 	private DataModelTranslationService translationService;
-	
+
 	private final Logger logger = LogManager.getLogger(this.getClass());
 
 	//=================================================================================================
 	// methods
-	
+
 	// init-translation
-	
+
 	//-------------------------------------------------------------------------------------------------
 	@Operation(summary = "Initiates the data model translation job and returns its ID")
 	@ApiResponses(value = {
@@ -64,9 +65,14 @@ public class DataModelTranslationAPI {
 	@PostMapping(path = WrapperForPythonDatamodelTranslatorConstants.HTTP_API_OP_INIT_TRANSLATION_PATH, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody UUID initTranslation(@RequestBody(required = true) final DataModelTranslationInitRequestDTO dto) {
 		logger.debug("initTranslation started...");
-		return translationService.initTranslation(dto);
+
+		final String origin = HttpMethod.POST.name() + " "
+				+ WrapperForPythonDatamodelTranslatorConstants.HTTP_API_DATA_MODEL_TRANSLATION_BASE_PATH
+				+ WrapperForPythonDatamodelTranslatorConstants.HTTP_API_OP_INIT_TRANSLATION_PATH;
+
+		return translationService.initTranslation(dto, origin);
 	}
-	
+
 	// get-translation-result
 	//-------------------------------------------------------------------------------------------------
 	@Operation(summary = "Returns the translation status and optionally the result file by ID")
@@ -85,7 +91,7 @@ public class DataModelTranslationAPI {
 		logger.debug("getTranslationResult started...");
 		return translationService.getTranslationResult(taskId);
 	}
-	
+
 	// abort-translation
 
 	//-------------------------------------------------------------------------------------------------
@@ -100,6 +106,8 @@ public class DataModelTranslationAPI {
 	@DeleteMapping(path = WrapperForPythonDatamodelTranslatorConstants.HTTP_API_OP_ABORT_TRANSLATION_PATH)
 	public ResponseEntity<Void> abortTranslation(@RequestParam final UUID taskId) {
 		logger.debug("abortTranslation started...");
+		
+		logger.info("abortTranslation is not implemented!");
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 }

@@ -1,0 +1,57 @@
+2025-09-21 22:26:03.152  INFO DESKTOP-CN7SI54 --- [           main] .WrapperForPythonDatamodelTranslatorMain : Starting WrapperForPythonDatamodelTranslatorMain using Java 21.0.3 with PID 15620 (C:\Users\sga\Documents\GitHub\ah5-app-aitia-datamodel-translator-python-wrapper-java-spring\target\classes started by sga in C:\Users\sga\Documents\GitHub\ah5-app-aitia-datamodel-translator-python-wrapper-java-spring)
+2025-09-21 22:26:03.184  INFO DESKTOP-CN7SI54 --- [           main] .WrapperForPythonDatamodelTranslatorMain : No active profile set, falling back to 1 default profile: "default"
+2025-09-21 22:26:08.450  WARN DESKTOP-CN7SI54 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 689cd2fe-e1f1-44e1-9ab8-74849f08a808
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2025-09-21 22:26:09.810  INFO DESKTOP-CN7SI54 --- [           main] tamodelTranslatorApplicationInitListener : System name: WrapperForPythonDatamodelTranslator
+2025-09-21 22:26:09.811  INFO DESKTOP-CN7SI54 --- [           main] tamodelTranslatorApplicationInitListener : System port: 12512
+2025-09-21 22:26:09.811  INFO DESKTOP-CN7SI54 --- [           main] tamodelTranslatorApplicationInitListener : SSL mode: DISABLED
+2025-09-21 22:26:09.811  INFO DESKTOP-CN7SI54 --- [           main] tamodelTranslatorApplicationInitListener : Authentication policy: DECLARED
+2025-09-21 22:26:11.307  INFO DESKTOP-CN7SI54 --- [           main] tamodelTranslatorApplicationInitListener : ServiceRegistry is accessible...
+2025-09-21 22:26:11.509  INFO DESKTOP-CN7SI54 --- [           main] tamodelTranslatorApplicationInitListener : System WrapperForPythonDatamodelTranslator published 0 service(s)
+2025-09-21 22:26:12.178  INFO DESKTOP-CN7SI54 --- [           main] tamodelTranslatorApplicationInitListener : System WrapperForPythonDatamodelTranslator published 1 service(s)
+2025-09-21 22:26:12.212  INFO DESKTOP-CN7SI54 --- [           main] .WrapperForPythonDatamodelTranslatorMain : Started WrapperForPythonDatamodelTranslatorMain in 10.153 seconds (process running for 12.47)
+2025-09-21 22:27:11.336  INFO DESKTOP-CN7SI54 --- [           main] .WrapperForPythonDatamodelTranslatorMain : Starting WrapperForPythonDatamodelTranslatorMain using Java 21.0.3 with PID 32536 (C:\Users\sga\Documents\GitHub\ah5-app-aitia-datamodel-translator-python-wrapper-java-spring\target\classes started by sga in C:\Users\sga\Documents\GitHub\ah5-app-aitia-datamodel-translator-python-wrapper-java-spring)
+2025-09-21 22:27:11.364  INFO DESKTOP-CN7SI54 --- [           main] .WrapperForPythonDatamodelTranslatorMain : No active profile set, falling back to 1 default profile: "default"
+2025-09-21 22:27:16.652  WARN DESKTOP-CN7SI54 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 8d581ee5-9c24-41a1-9252-703e36a74adc
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2025-09-21 22:27:18.349  WARN DESKTOP-CN7SI54 --- [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
+2025-09-21 22:27:19.442  INFO DESKTOP-CN7SI54 --- [           main] tamodelTranslatorApplicationInitListener : ServiceRegistry is accessible...
+2025-09-21 22:27:19.442  INFO DESKTOP-CN7SI54 --- [           main] tamodelTranslatorApplicationInitListener : Core system WrapperForPythonDatamodelTranslator revoked 0 service(s)
+2025-09-21 22:27:19.543 ERROR DESKTOP-CN7SI54 --- [           main] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 12512 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 12512 or configure this application to listen on another port.
+
+2025-09-21 22:29:23.674  INFO DESKTOP-CN7SI54 --- [           main] .WrapperForPythonDatamodelTranslatorMain : Starting WrapperForPythonDatamodelTranslatorMain using Java 21.0.3 with PID 26728 (C:\Users\sga\Documents\GitHub\ah5-app-aitia-datamodel-translator-python-wrapper-java-spring\target\classes started by sga in C:\Users\sga\Documents\GitHub\ah5-app-aitia-datamodel-translator-python-wrapper-java-spring)
+2025-09-21 22:29:23.699  INFO DESKTOP-CN7SI54 --- [           main] .WrapperForPythonDatamodelTranslatorMain : No active profile set, falling back to 1 default profile: "default"
+2025-09-21 22:29:29.628  WARN DESKTOP-CN7SI54 --- [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 1d46943d-ba31-451b-94ed-72d8f0041bfb
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2025-09-21 22:29:31.499  INFO DESKTOP-CN7SI54 --- [           main] tamodelTranslatorApplicationInitListener : System name: WrapperForPythonDatamodelTranslator
+2025-09-21 22:29:31.500  INFO DESKTOP-CN7SI54 --- [           main] tamodelTranslatorApplicationInitListener : System port: 12512
+2025-09-21 22:29:31.500  INFO DESKTOP-CN7SI54 --- [           main] tamodelTranslatorApplicationInitListener : SSL mode: DISABLED
+2025-09-21 22:29:31.501  INFO DESKTOP-CN7SI54 --- [           main] tamodelTranslatorApplicationInitListener : Authentication policy: DECLARED
+2025-09-21 22:29:32.822  INFO DESKTOP-CN7SI54 --- [           main] tamodelTranslatorApplicationInitListener : ServiceRegistry is accessible...
+2025-09-21 22:29:33.034  INFO DESKTOP-CN7SI54 --- [           main] tamodelTranslatorApplicationInitListener : System WrapperForPythonDatamodelTranslator published 0 service(s)
+2025-09-21 22:29:33.375  INFO DESKTOP-CN7SI54 --- [           main] tamodelTranslatorApplicationInitListener : System WrapperForPythonDatamodelTranslator published 1 service(s)
+2025-09-21 22:29:33.389  INFO DESKTOP-CN7SI54 --- [           main] .WrapperForPythonDatamodelTranslatorMain : Started WrapperForPythonDatamodelTranslatorMain in 10.792 seconds (process running for 14.062)
