@@ -16,6 +16,7 @@
  *******************************************************************************/
 package ai.aitia.arrowhead.arrowhead_app_datamodel_translator_python_wrapper.init;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +31,9 @@ import ai.aitia.arrowhead.arrowhead_app_datamodel_translator_python_wrapper.Wrap
 import eu.arrowhead.common.exception.InvalidParameterException;
 import eu.arrowhead.common.init.ApplicationInitListener;
 import eu.arrowhead.common.model.ServiceModel;
+import eu.arrowhead.dto.AuthorizationGrantRequestDTO;
+import eu.arrowhead.dto.AuthorizationPolicyRequestDTO;
+import eu.arrowhead.dto.AuthorizationPolicyResponseDTO;
 import eu.arrowhead.dto.ServiceInstanceCreateRequestDTO;
 import eu.arrowhead.dto.ServiceInstanceInterfaceRequestDTO;
 import eu.arrowhead.dto.ServiceInstanceResponseDTO;
@@ -61,6 +65,25 @@ public class WrapperForPythonDatamodelTranslatorApplicationInitListener extends 
 			}
 			logger.info("System {} published {} service(s)", sysInfo.getSystemName(), registeredServices.size());
 		}
+		
+		// grant authorization
+		final AuthorizationGrantRequestDTO payload = new AuthorizationGrantRequestDTO(
+				"LOCAL",
+				"SERVICE_DEF",
+				Constants.SERVICE_DEF_DATA_MODEL_TRANSLATION,
+				"can be used by every system in the local cloud",
+				new AuthorizationPolicyRequestDTO("ALL", null, null),
+				null);
+
+		try {
+			arrowheadHttpService.consumeService(
+					Constants.SERVICE_DEF_AUTHORIZATION,
+					Constants.SERVICE_OP_GRANT,
+					AuthorizationPolicyResponseDTO.class,
+					payload);
+		} catch (final Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	//-------------------------------------------------------------------------------------------------
@@ -69,6 +92,7 @@ public class WrapperForPythonDatamodelTranslatorApplicationInitListener extends 
 
         try {
             final ProcessBuilder initScriptProcessBuilder = new ProcessBuilder("python", initScriptLocation);
+            initScriptProcessBuilder.directory(new File(new File(initScriptLocation).getParent()));
             initScriptProcessBuilder.inheritIO();
             final Process initScriptProcess = initScriptProcessBuilder.start();
             final int exitCode = initScriptProcess.waitFor();

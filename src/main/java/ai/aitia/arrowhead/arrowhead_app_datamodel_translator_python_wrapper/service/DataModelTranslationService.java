@@ -1,6 +1,7 @@
 package ai.aitia.arrowhead.arrowhead_app_datamodel_translator_python_wrapper.service;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
@@ -24,6 +25,7 @@ import ai.aitia.arrowhead.arrowhead_app_datamodel_translator_python_wrapper.Wrap
 import ai.aitia.arrowhead.arrowhead_app_datamodel_translator_python_wrapper.service.model.DataModelTranslationTask;
 import ai.aitia.arrowhead.arrowhead_app_datamodel_translator_python_wrapper.service.validation.DataModelTranslationServiceValidation;
 import eu.arrowhead.common.exception.InternalServerError;
+import eu.arrowhead.common.exception.InvalidParameterException;
 import eu.arrowhead.dto.DataModelTranslationInitRequestDTO;
 import eu.arrowhead.dto.DataModelTranslationResultResponseDTO;
 import eu.arrowhead.dto.enums.DataModelTranslationTaskStatus;
@@ -69,10 +71,15 @@ public class DataModelTranslationService {
     }
 
     //-------------------------------------------------------------------------------------------------
-    public DataModelTranslationResultResponseDTO getTranslationResult(UUID jobId) {
+    public DataModelTranslationResultResponseDTO getTranslationResult(UUID jobId, final String origin) {
     	logger.debug("getTranslationResult started...");
 
         final DataModelTranslationTask job = jobCache.get(jobId);
+        
+        if (job == null) {
+        	throw new InvalidParameterException("Invalid UUID", origin);
+        }
+
         final String result = readTranslatedFile(fileNameCache.get(jobId));
         return new DataModelTranslationResultResponseDTO(job.getStatus(), result);
     }
@@ -88,42 +95,36 @@ public class DataModelTranslationService {
     	// decode the bytes
     	final byte[] bytes = Base64.getDecoder().decode(job.getPayload());
 
-    	final String inputFileName = job.getUuid().toString() + ".bin";
-    	String outputFileName = null;
+    	final String fileName = job.getUuid().toString() + ".xml";
     	try {
     		// save the file
-    		Files.write(Paths.get(inputFolder, inputFileName), bytes);
+    		Files.write(Paths.get(inputFolder, fileName), bytes);
 
     		// run the script
-    		outputFileName = runTranslationScript(inputFileName);
+    		runTranslationScript(job.getUuid().toString());
     	} catch (final Exception ex) {
     		job.setStatus(DataModelTranslationTaskStatus.ERROR);
     		throw new InternalServerError("An error occured while running the translation script");
     	}
-    	if (outputFileName != null) {
-    		fileNameCache.put(job.getUuid(), outputFileName);
-    	}
+
+    	fileNameCache.put(job.getUuid(), fileName);
 
     	// the job is done
     	job.setStatus(DataModelTranslationTaskStatus.DONE);
     }
 
   //-------------------------------------------------------------------------------------------------
-    private String runTranslationScript(final String inputFileName) throws ConfigurationException, InterruptedException, IOException {
-
+    private void runTranslationScript(final String name) throws ConfigurationException, InterruptedException, IOException {
+    	
         try {
-            final ProcessBuilder initScriptProcessBuilder = new ProcessBuilder("python", translationScriptLocation, Paths.get(inputFolder, inputFileName).toString());
-            final Process initScriptProcess = initScriptProcessBuilder.start();
-
-            String outputFileName = null;
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(initScriptProcess.getInputStream()))) {
-            	outputFileName = reader.readLine();
-            }
-            final int exitCode = initScriptProcess.waitFor();
+            final ProcessBuilder translationScriptProcessBuilder = new ProcessBuilder("python", translationScriptLocation, name);
+            translationScriptProcessBuilder.inheritIO();
+            translationScriptProcessBuilder.directory(new File(new File(translationScriptLocation).getParent()));
+            final Process translationScriptProcess = translationScriptProcessBuilder.start();
+            final int exitCode = translationScriptProcess.waitFor();
             if (exitCode != 0) {
             	logger.debug("Translation python script exited with code: " + exitCode);
             }
-            return outputFileName;
         } catch (final Exception ex) {
 			throw ex;
         }
@@ -131,11 +132,11 @@ public class DataModelTranslationService {
 
     //-------------------------------------------------------------------------------------------------
     private String readTranslatedFile(final String filename) {
-    	
+
     	if (filename == null) {
     		return null;
     	}
-    	
+
         try {
             byte[] fileBytes = Files.readAllBytes(Paths.get(outputFolder, filename));
             return Base64.getEncoder().encodeToString(fileBytes);
@@ -144,7 +145,7 @@ public class DataModelTranslationService {
             return null;
         }
     }
-    
+
 	//-------------------------------------------------------------------------------------------------
     private void start() {
         Thread worker = new Thread(() -> {
@@ -160,7 +161,7 @@ public class DataModelTranslationService {
         });
         worker.start();
     }
-    
+
     //-------------------------------------------------------------------------------------------------
     @PostConstruct
     private void init() {

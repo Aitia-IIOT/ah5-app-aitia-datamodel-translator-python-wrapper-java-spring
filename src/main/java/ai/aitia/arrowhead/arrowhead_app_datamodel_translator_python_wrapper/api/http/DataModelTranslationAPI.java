@@ -54,7 +54,7 @@ public class DataModelTranslationAPI {
 	@Operation(summary = "Initiates the data model translation job and returns its ID")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = Constants.HTTP_STATUS_OK, description = Constants.SWAGGER_HTTP_200_MESSAGE, content = {
-					@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = UUID.class)) }),
+					@Content(mediaType = MediaType.TEXT_PLAIN_VALUE, schema = @Schema(implementation = UUID.class)) }),
 			@ApiResponse(responseCode = Constants.HTTP_STATUS_BAD_REQUEST, description = Constants.SWAGGER_HTTP_400_MESSAGE, content = {
 					@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessageDTO.class)) }),
 			@ApiResponse(responseCode = Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR, description = Constants.SWAGGER_HTTP_500_MESSAGE, content = {
@@ -62,15 +62,15 @@ public class DataModelTranslationAPI {
 			@ApiResponse(responseCode = Constants.HTTP_STATUS_SERVICE_UNAVAILABLE, description = Constants.SWAGGER_HTTP_503_MESSAGE, content = {
 					@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessageDTO.class)) })
 	})
-	@PostMapping(path = WrapperForPythonDatamodelTranslatorConstants.HTTP_API_OP_INIT_TRANSLATION_PATH, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody UUID initTranslation(@RequestBody(required = true) final DataModelTranslationInitRequestDTO dto) {
+	@PostMapping(path = WrapperForPythonDatamodelTranslatorConstants.HTTP_API_OP_INIT_TRANSLATION_PATH, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+	public @ResponseBody String initTranslation(@RequestBody(required = true) final DataModelTranslationInitRequestDTO dto) {
 		logger.debug("initTranslation started...");
 
 		final String origin = HttpMethod.POST.name() + " "
 				+ WrapperForPythonDatamodelTranslatorConstants.HTTP_API_DATA_MODEL_TRANSLATION_BASE_PATH
 				+ WrapperForPythonDatamodelTranslatorConstants.HTTP_API_OP_INIT_TRANSLATION_PATH;
 
-		return translationService.initTranslation(dto, origin);
+		return translationService.initTranslation(dto, origin).toString();
 	}
 
 	// get-translation-result
@@ -89,7 +89,12 @@ public class DataModelTranslationAPI {
 	@GetMapping(path = WrapperForPythonDatamodelTranslatorConstants.HTTP_API_OP_GET_TRANSLATION_RESULT_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody DataModelTranslationResultResponseDTO getTranslationResult(@RequestParam final UUID taskId) {
 		logger.debug("getTranslationResult started...");
-		return translationService.getTranslationResult(taskId);
+		
+		final String origin = HttpMethod.POST.name() + " "
+				+ WrapperForPythonDatamodelTranslatorConstants.HTTP_API_DATA_MODEL_TRANSLATION_BASE_PATH
+				+ WrapperForPythonDatamodelTranslatorConstants.HTTP_API_OP_GET_TRANSLATION_RESULT_PATH;
+
+		return translationService.getTranslationResult(taskId, origin);
 	}
 
 	// abort-translation
