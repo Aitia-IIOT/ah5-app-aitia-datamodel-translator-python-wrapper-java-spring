@@ -5,17 +5,17 @@ public class WrapperForPythonDatamodelTranslatorConstants {
 
 	//=================================================================================================
 	// members
-	
+
 	public static final String SYSTEM_NAME = "WrapperForPythonDatamodelTranslator";
 	public static final String SYSTEM_VERSION = "1.0.0";
 	public static final String VERSION_DATA_MODEL_TRANSLATION = "1.0.0";
-	
+
 	// HTTP API
 	public static final String HTTP_API_DATA_MODEL_TRANSLATION_BASE_PATH = "/data-model-translation";
 	public static final String HTTP_API_OP_INIT_TRANSLATION_PATH = "/init-translation";
 	public static final String HTTP_API_OP_GET_TRANSLATION_RESULT_PATH = "/get-translation-result";
 	public static final String HTTP_API_OP_ABORT_TRANSLATION_PATH = "/abort-translation";
-	
+
 	// translation
 	public static final String INIT_SCRIPT_LOCATION = "init.script.location";
 	public static final String $INIT_SCRIPT_LOCATION = "${" + INIT_SCRIPT_LOCATION + ":" + "}";
@@ -27,7 +27,9 @@ public class WrapperForPythonDatamodelTranslatorConstants {
 	public static final String $TRANSLATION_OUTPUT_FOLDER = "${" + TRANSLATION_OUTPUT_FOLDER + ":" + "}";
 	public static final String MODEL_IDS = "model.ids";
 	public static final String $MODEL_IDS = "#{'${" + MODEL_IDS + ":" +  "}'.split(',')}";
-	
+	public static final String RESULT_MIME_TYPES = "result.mime.types";
+	public static final String $RESULT_MIME_TYPES = "#{'${" + RESULT_MIME_TYPES + ":" +  "}'.split(',')}";
+
 	public static final String JOB_QUEUE_TRANSLATION = "jobQueueTranslation";
 
 	//=================================================================================================

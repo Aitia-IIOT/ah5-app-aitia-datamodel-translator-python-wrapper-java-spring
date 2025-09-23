@@ -60,13 +60,13 @@ public class DataModelTranslationServiceNormalization {
 	// assistant methods
 
 	//-------------------------------------------------------------------------------------------------
-	private Map<String, String> normalizeSettings(final Map<String, String> settings) {
+	private Map<String, Object> normalizeSettings(final Map<String, Object> settings) {
 
 		if (settings == null) {
 			return settings;
 		}
 
-		final Map<String, String> normalized = new HashMap<>(settings.size());
+		final Map<String, Object> normalized = new HashMap<>(settings.size());
 		settings.entrySet().forEach(s -> normalized.put(attributeNormalizer.normalizeAttribute(s.getKey()), s.getValue()));
 		return normalized;
 	}

@@ -8,25 +8,23 @@ public class DataModelTranslationTask {
 
 	//=================================================================================================
 	// members
-	
+
 	private UUID uuid;
 	private DataModelTranslationTaskStatus status;
-	private String inputModelId;
-	private String outputModelId;
+	private String resultMimeType;
 	private String payload;
 
 	//=================================================================================================
 	// methods
-	
+
 	//-------------------------------------------------------------------------------------------------
-	public DataModelTranslationTask(final String inputModelId, final String outputModelId, final String payload) {
+	public DataModelTranslationTask(final String resultMimeType, final String payload) {
 		this.uuid = UUID.randomUUID();
 		this.status = DataModelTranslationTaskStatus.PENDING;
-		this.inputModelId = inputModelId;
-		this.outputModelId = outputModelId;
+		this.resultMimeType = resultMimeType;
 		this.payload = payload;
 	}
-	
+
 	//=================================================================================================
 	// boilerplate
 
@@ -46,23 +44,13 @@ public class DataModelTranslationTask {
 	}
 
 	//-------------------------------------------------------------------------------------------------
-	public String getInputModelId() {
-		return inputModelId;
+	public String getResultMimeType() {
+		return resultMimeType;
 	}
 
 	//-------------------------------------------------------------------------------------------------
-	public void setInputModelId(String inputModelId) {
-		this.inputModelId = inputModelId;
-	}
-
-	//-------------------------------------------------------------------------------------------------
-	public String getOutputModelId() {
-		return outputModelId;
-	}
-
-	//-------------------------------------------------------------------------------------------------
-	public void setOutputModelId(String outputModelId) {
-		this.outputModelId = outputModelId;
+	public void setInputModelId(final String resultMimeType) {
+		this.resultMimeType = resultMimeType;
 	}
 
 	//-------------------------------------------------------------------------------------------------

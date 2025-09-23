@@ -1,8 +1,12 @@
 package ai.aitia.arrowhead.arrowhead_app_datamodel_translator_python_wrapper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -16,6 +20,8 @@ import eu.arrowhead.common.http.model.HttpOperationModel;
 import eu.arrowhead.common.model.InterfaceModel;
 import eu.arrowhead.common.model.ServiceModel;
 import eu.arrowhead.common.model.SystemModel;
+import eu.arrowhead.common.service.validation.name.DataModelIdentifierNormalizer;
+import eu.arrowhead.common.service.validation.name.DataModelIdentifierValidator;
 import eu.arrowhead.dto.enums.ServiceInterfacePolicy;
 
 @Component
@@ -23,16 +29,36 @@ public class WrapperForPythonDatamodelTranslatorSystemInfo extends SystemInfo {
 
 	//=================================================================================================
 	// members
-	
+
 	private SystemModel systemModel;
 	
+	@Value(WrapperForPythonDatamodelTranslatorConstants.$TRANSLATION_SCRIPT_LOCATION)
+	private String translationScriptLocation;
+
+	@Value(WrapperForPythonDatamodelTranslatorConstants.$TRANSLATION_INPUT_FOLDER)
+	private String inputFolder;
+
+	@Value(WrapperForPythonDatamodelTranslatorConstants.$TRANSLATION_OUTPUT_FOLDER)
+	private String outputFolder;
+
 	@Value(WrapperForPythonDatamodelTranslatorConstants.$INIT_SCRIPT_LOCATION)
 	private String initScriptLocation;
-	
+
 	@Value(WrapperForPythonDatamodelTranslatorConstants.$MODEL_IDS)
 	private List<String> modelIds;
 	
+	@Value(WrapperForPythonDatamodelTranslatorConstants.$RESULT_MIME_TYPES)
+	private List<String> resultMimeTypes;
+
 	private boolean initScriptHasRun = false;
+	
+	private Map<List<String>, String> modelIdsWithResultMimeTpyes = null;
+	
+	@Autowired
+	private DataModelIdentifierValidator modelIdValidator;
+	
+	@Autowired
+	private DataModelIdentifierNormalizer modelIdNormalizer;
 
 	//=================================================================================================
 	// methods
@@ -50,7 +76,7 @@ public class WrapperForPythonDatamodelTranslatorSystemInfo extends SystemInfo {
 			SystemModel.Builder builder = new SystemModel.Builder()
 					.address(getAddress())
 					.version(WrapperForPythonDatamodelTranslatorConstants.SYSTEM_VERSION);
-			
+
 			if (AuthenticationPolicy.CERTIFICATE == this.getAuthenticationPolicy()) {
 				builder = builder.metadata(Constants.METADATA_KEY_X509_PUBLIC_KEY, getPublicKey());
 			}
@@ -60,7 +86,7 @@ public class WrapperForPythonDatamodelTranslatorSystemInfo extends SystemInfo {
 
 		return systemModel;
 	}
-	
+
 	//-------------------------------------------------------------------------------------------------
 	@Override
 	public List<ServiceModel> getServices() {
@@ -72,22 +98,73 @@ public class WrapperForPythonDatamodelTranslatorSystemInfo extends SystemInfo {
 		final ServiceModel dataModelTranslationService = new ServiceModel.Builder()
 			.serviceDefinition(Constants.SERVICE_DEF_DATA_MODEL_TRANSLATION)
 			.version(WrapperForPythonDatamodelTranslatorConstants.VERSION_DATA_MODEL_TRANSLATION)
-			.metadata(Constants.METADATA_KEY_DATA_MODEL_IDS, getModelIds())
+			.metadata(Constants.METADATA_KEY_DATA_MODEL_IDS, getModelIdsWithResultMimeTpyes().keySet())
 			.serviceInterface(getHTTPInterfaceForInterfaceBridgeManagement())
 			.build();
 		return List.of(dataModelTranslationService);
 	}
 	
 	//-------------------------------------------------------------------------------------------------
+	// result keys: input modelid, output modelid
+	// result values: mime type
+	public Map<List<String>, String> getModelIdsWithResultMimeTpyes() {
+		
+		if (modelIdsWithResultMimeTpyes == null) {
+
+			if (modelIds.size() % 2 != 0) {
+				throw new InvalidParameterException("The list of model ids is not specified correctly");
+			}
+			
+			// normalize model ids
+			final List<String> normalizedModelIds = new ArrayList<String>(modelIds.size());
+			for (final String modelId : modelIds) {
+				final String normalized = modelIdNormalizer.normalize(modelId);
+				modelIdValidator.validateDataModelIdentifier(normalized);
+				normalizedModelIds.add(normalized);
+			}
+		
+			if (resultMimeTypes.size() != normalizedModelIds.size() / 2) {
+				throw new InvalidParameterException("There must be exactly one result mime type specified for each model id pair");
+			}
+
+			modelIdsWithResultMimeTpyes = new HashMap<List<String>, String>(normalizedModelIds.size() / 2);
+
+			for (int i = 0, j = 0; i < modelIds.size(); i += 2, ++j) {
+
+				if (modelIdsWithResultMimeTpyes.containsKey(List.of(normalizedModelIds.get(i), normalizedModelIds.get(i+1)))) {
+					throw new InvalidParameterException("Duplicated input-output model id pair: " + normalizedModelIds.get(i) + ", " + normalizedModelIds.get(i+1));
+				}
+				modelIdsWithResultMimeTpyes.put(List.of(normalizedModelIds.get(i), normalizedModelIds.get(i+1)), resultMimeTypes.get(j));
+			}
+		}
+		return modelIdsWithResultMimeTpyes;
+	}
+
+	//-------------------------------------------------------------------------------------------------
 	public void setInitScriptHasRun() {
 		initScriptHasRun = true;
 	}
-	
+
 	//-------------------------------------------------------------------------------------------------
 	public String getInitScriptLocation() {
 		return initScriptLocation;
 	}
 	
+	//-------------------------------------------------------------------------------------------------
+	public String getTranslationScriptLocation() {
+		return translationScriptLocation;
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	public String getInputFolder() {
+		return inputFolder;
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	public String getOutputFolder() {
+		return outputFolder;
+	}
+
 	//=================================================================================================
 	// assistant methods
 
@@ -117,21 +194,5 @@ public class WrapperForPythonDatamodelTranslatorSystemInfo extends SystemInfo {
 				.operation(Constants.SERVICE_OP_DATA_MODEL_TRANSLATOR_GET_TRANSLATION_RESULT, getTranslationResult)
 				.operation(Constants.SERVICE_OP_DATA_MODEL_TRANSLATOR_ABORT_TRANSLATION, abortTranslation)
 				.build();
-	}
-	
-	//-------------------------------------------------------------------------------------------------
-	private List<List<String>> getModelIds() {
-
-		if (modelIds.size() % 2 != 0) {
-			throw new InvalidParameterException("The list of model ids is not specified correctly!");
-		}
-
-		final List<List<String>> result = new ArrayList<List<String>>(modelIds.size()/2);
-
-		for (int i = 0; i < modelIds.size(); i += 2) {
-			result.add(List.of(modelIds.get(i), modelIds.get(i+1)));
-		}
-		
-		return result;
 	}
 }

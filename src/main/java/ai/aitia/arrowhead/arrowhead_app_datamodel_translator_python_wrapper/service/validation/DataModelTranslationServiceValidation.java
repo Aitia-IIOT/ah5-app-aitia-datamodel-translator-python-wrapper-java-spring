@@ -17,12 +17,14 @@
 package ai.aitia.arrowhead.arrowhead_app_datamodel_translator_python_wrapper.service.validation;
 
 import java.util.Base64;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ai.aitia.arrowhead.arrowhead_app_datamodel_translator_python_wrapper.WrapperForPythonDatamodelTranslatorSystemInfo;
 import ai.aitia.arrowhead.arrowhead_app_datamodel_translator_python_wrapper.service.normalization.DataModelTranslationServiceNormalization;
 import eu.arrowhead.common.Utilities;
 import eu.arrowhead.common.exception.InvalidParameterException;
@@ -45,6 +47,9 @@ public class DataModelTranslationServiceValidation {
 
 	@Autowired
 	private DataModelIdentifierValidator modelIdValidator;
+	
+	@Autowired
+	private WrapperForPythonDatamodelTranslatorSystemInfo sysInfo;
 
 	private final Logger logger = LogManager.getLogger(this.getClass());
 
@@ -76,6 +81,9 @@ public class DataModelTranslationServiceValidation {
 			modelIdValidator.validateDataModelIdentifier(dto.outputModelId());	
 		} catch (final InvalidParameterException ex) {
 			throw new InvalidParameterException(ex.getMessage(), origin);
+		}
+		if (!sysInfo.getModelIdsWithResultMimeTpyes().containsKey(List.of(dto.inputModelId(), dto.outputModelId()))) {
+			throw new InvalidParameterException("It is not possible to translate from " + dto.inputModelId() + " to " + dto.outputModelId());
 		}
 		
 		// payload
