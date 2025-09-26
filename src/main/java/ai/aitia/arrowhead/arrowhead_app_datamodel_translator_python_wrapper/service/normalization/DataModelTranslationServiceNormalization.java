@@ -16,15 +16,11 @@
  *******************************************************************************/
 package ai.aitia.arrowhead.arrowhead_app_datamodel_translator_python_wrapper.service.normalization;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eu.arrowhead.common.service.normalization.AttributeNormalizer;
 import eu.arrowhead.common.service.validation.name.DataModelIdentifierNormalizer;
 import eu.arrowhead.dto.DataModelTranslationInitRequestDTO;
 
@@ -36,9 +32,6 @@ public class DataModelTranslationServiceNormalization {
 	
 	@Autowired
 	private DataModelIdentifierNormalizer modelIdNormalizer;
-	
-	@Autowired
-	private AttributeNormalizer attributeNormalizer;
 	
 	private final Logger logger = LogManager.getLogger(this.getClass());
 
@@ -53,21 +46,6 @@ public class DataModelTranslationServiceNormalization {
 				modelIdNormalizer.normalize(dto.inputModelId()),
 				modelIdNormalizer.normalize(dto.outputModelId()),
 				dto.payload(),
-				normalizeSettings(dto.settings()));
-	}
-
-	//=================================================================================================
-	// assistant methods
-
-	//-------------------------------------------------------------------------------------------------
-	private Map<String, Object> normalizeSettings(final Map<String, Object> settings) {
-
-		if (settings == null) {
-			return settings;
-		}
-
-		final Map<String, Object> normalized = new HashMap<>(settings.size());
-		settings.entrySet().forEach(s -> normalized.put(attributeNormalizer.normalizeAttribute(s.getKey()), s.getValue()));
-		return normalized;
+				dto.settings());
 	}
 }

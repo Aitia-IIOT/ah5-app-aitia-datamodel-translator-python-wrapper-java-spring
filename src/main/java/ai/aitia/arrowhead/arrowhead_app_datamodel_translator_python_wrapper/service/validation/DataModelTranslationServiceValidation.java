@@ -28,7 +28,6 @@ import ai.aitia.arrowhead.arrowhead_app_datamodel_translator_python_wrapper.Wrap
 import ai.aitia.arrowhead.arrowhead_app_datamodel_translator_python_wrapper.service.normalization.DataModelTranslationServiceNormalization;
 import eu.arrowhead.common.Utilities;
 import eu.arrowhead.common.exception.InvalidParameterException;
-import eu.arrowhead.common.service.validation.AttributeValidator;
 import eu.arrowhead.common.service.validation.name.DataModelIdentifierValidator;
 
 import eu.arrowhead.dto.DataModelTranslationInitRequestDTO;
@@ -41,9 +40,6 @@ public class DataModelTranslationServiceValidation {
 
 	@Autowired
 	private DataModelTranslationServiceNormalization normalizer;
-
-	@Autowired
-	private AttributeValidator attributeValidator;
 
 	@Autowired
 	private DataModelIdentifierValidator modelIdValidator;
@@ -94,15 +90,6 @@ public class DataModelTranslationServiceValidation {
 			  Base64.getDecoder().decode(dto.payload());
 		} catch (final IllegalArgumentException ex) {
 			throw new InvalidParameterException("Translation payload format is incorrect, must be base64 encoded!", origin);
-		}
-
-		// settings
-		if (!Utilities.isEmpty(dto.settings())) {
-			try {
-				attributeValidator.validateAttributeSet(dto.settings().keySet());
-			} catch (final InvalidParameterException ex) {
-				throw new InvalidParameterException(ex.getMessage(), origin);
-			}
 		}
 	}
 }
