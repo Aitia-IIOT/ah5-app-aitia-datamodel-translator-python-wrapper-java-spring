@@ -1,4 +1,4 @@
-package ai.aitia.arrowhead.dummy_provider;
+package ai.aitia.arrowhead.data_saver;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,20 +9,20 @@ import ai.aitia.arrowhead.Constants;
 
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
 @ComponentScan({ Constants.BASE_PACKAGE, Constants.COMMON_BASE_PACKAGE })
-public class DummyProviderMain {
+public class DataSaverMain {
 
 	//=================================================================================================
 	// methods
 
 	//-------------------------------------------------------------------------------------------------
 	public static void main(String[] args) {
-		SpringApplication.run(DummyProviderMain.class, args);
+		SpringApplication.run(DataSaverMain.class, args);
 	}
 	
 	//=================================================================================================
 	// boilerplate
 
 	//-------------------------------------------------------------------------------------------------
-	protected DummyProviderMain() {
+	protected DataSaverMain() {
 	}
 }

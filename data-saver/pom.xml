@@ -7,10 +7,10 @@
 		<artifactId>arrowhead-app-datamodel-translator-python-wrapper</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<artifactId>dummy-provider</artifactId>
+	<artifactId>data-saver</artifactId>
 	<packaging>jar</packaging>
-	<name>Aitia Dummy Provider for Python Datamodel Translator</name>
-	<description>Aitia Dummy Provider for Python Datamodel Translator using Spring Boot</description>
+	<name>Aitia Data Saver for Python Datamodel Translator</name>
+	<description>Aitia Data Saver for Python Datamodel Translator using Spring Boot</description>
 	
 	<url>https://github.com/Aitia-IIOT/ah5-app-aitia-datamodel-translator-python-wrapper-java-spring</url>
 	<licenses>

@@ -1,4 +1,4 @@
-package ai.aitia.arrowhead.dummy_provider;
+package ai.aitia.arrowhead.data_saver;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import eu.arrowhead.common.model.ServiceModel;
 import eu.arrowhead.common.model.SystemModel;
 
 @Component
-public class DummyProviderSystemInfo extends SystemInfo {
+public class DataSaverSystemInfo extends SystemInfo {
 
 	//=================================================================================================
 	// members
@@ -20,7 +20,7 @@ public class DummyProviderSystemInfo extends SystemInfo {
 	//-------------------------------------------------------------------------------------------------
 	@Override
 	public String getSystemName() {
-		return DummyProviderConstants.SYSTEM_NAME;
+		return DataSaverConstants.SYSTEM_NAME;
 	}
 
 	//-------------------------------------------------------------------------------------------------

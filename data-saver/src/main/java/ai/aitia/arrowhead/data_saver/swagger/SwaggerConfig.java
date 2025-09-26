@@ -14,12 +14,12 @@
  *  	Arrowhead Consortia - conceptualization
  *
  *******************************************************************************/
-package ai.aitia.arrowhead.dummy_provider.swagger;
+package ai.aitia.arrowhead.data_saver.swagger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
-import ai.aitia.arrowhead.dummy_provider.DummyProviderSystemInfo;
+import ai.aitia.arrowhead.data_saver.DataSaverSystemInfo;
 import eu.arrowhead.common.swagger.DefaultSwaggerConfig;
 import jakarta.annotation.PostConstruct;
 
@@ -30,7 +30,7 @@ public class SwaggerConfig extends DefaultSwaggerConfig {
 	// members
 	
 	@Autowired
-	private DummyProviderSystemInfo sysInfo;
+	private DataSaverSystemInfo sysInfo;
 
 	//=================================================================================================
 	// methods

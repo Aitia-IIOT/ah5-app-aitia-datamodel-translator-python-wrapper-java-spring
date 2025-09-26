@@ -31,7 +31,7 @@
 
 	<modules>
 		<module>data-model-translator-wrapper</module>
-		<module>dummy-provider</module>
+		<module>data-saver</module>
 	</modules>
 
 	<dependencies>
