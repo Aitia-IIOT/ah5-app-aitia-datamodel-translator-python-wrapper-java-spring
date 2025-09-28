@@ -39,7 +39,7 @@ import eu.arrowhead.dto.ServiceInstanceInterfaceRequestDTO;
 import eu.arrowhead.dto.ServiceInstanceResponseDTO;
 
 @Component
-public class WrapperForPythonDatamodelTranslatorApplicationInitListener extends ApplicationInitListener {
+public class DataModelTranslatorWrapperApplicationInitListener extends ApplicationInitListener {
 
 	//=================================================================================================
 	// assistant methods
