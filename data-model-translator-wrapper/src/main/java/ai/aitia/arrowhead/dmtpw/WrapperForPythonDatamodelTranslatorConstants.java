@@ -29,8 +29,6 @@ public class WrapperForPythonDatamodelTranslatorConstants {
 	public static final String RESULT_MIME_TYPES = "result.mime.types";
 	public static final String $RESULT_MIME_TYPES = "#{'${" + RESULT_MIME_TYPES + ":" +  "}'.split(',')}";
 
-	public static final String JOB_QUEUE_TRANSLATION = "jobQueueTranslation";
-
 	//=================================================================================================
 	// assistant methods
 

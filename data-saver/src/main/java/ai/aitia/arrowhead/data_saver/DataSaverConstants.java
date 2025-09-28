@@ -8,6 +8,14 @@ public class DataSaverConstants {
 	public static final String SYSTEM_NAME = "DataSaver";
 	public static final String SYSTEM_VERSION = "1.0.0";
 	
+	// HTTP API
+	public static final String HTTP_API_SAVE_DATA_BASE_PATH = "/save-data";
+	public static final String HTTP_API_OP_SAVE_IPC2581_PATH = "/save-ipc2581";
+	
+	// save data
+	public static final String SAVE_LOCATION = "save.location";
+	public static final String $SAVE_LOCATION = "${" + SAVE_LOCATION + ":" + "}";
+	
 	//=================================================================================================
 	// assistant methods
 

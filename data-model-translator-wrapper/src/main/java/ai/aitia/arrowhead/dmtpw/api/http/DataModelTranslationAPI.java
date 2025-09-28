@@ -1,6 +1,5 @@
 package ai.aitia.arrowhead.dmtpw.api.http;
 
-import java.security.Provider.Service;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
@@ -48,8 +47,6 @@ public class DataModelTranslationAPI {
 	//=================================================================================================
 	// methods
 
-	// init-translation
-
 	//-------------------------------------------------------------------------------------------------
 	@Operation(summary = "Initiates the data model translation job and returns its ID")
 	@ApiResponses(value = {
@@ -73,7 +70,6 @@ public class DataModelTranslationAPI {
 		return translationService.initTranslation(dto, origin).toString();
 	}
 
-	// get-translation-result
 	//-------------------------------------------------------------------------------------------------
 	@Operation(summary = "Returns the translation status and optionally the result file by ID")
 	@ApiResponses(value = {
@@ -96,8 +92,6 @@ public class DataModelTranslationAPI {
 
 		return translationService.getTranslationResult(taskId, origin);
 	}
-
-	// abort-translation
 
 	//-------------------------------------------------------------------------------------------------
 	@Operation(summary = "Not implemented operation")
