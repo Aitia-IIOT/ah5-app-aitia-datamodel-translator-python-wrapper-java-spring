@@ -98,7 +98,7 @@ public class WrapperForPythonDatamodelTranslatorSystemInfo extends SystemInfo {
 			.serviceDefinition(Constants.SERVICE_DEF_DATA_MODEL_TRANSLATION)
 			.version(WrapperForPythonDatamodelTranslatorConstants.VERSION_DATA_MODEL_TRANSLATION)
 			.metadata(Constants.METADATA_KEY_DATA_MODEL_IDS, getModelIdsWithResultMimeTpyes().keySet())
-			.serviceInterface(getHTTPInterfaceForInterfaceBridgeManagement())
+			.serviceInterface(getHTTPInterfaceForDataModelTranslation())
 			.build();
 		return List.of(dataModelTranslationService);
 	}
@@ -168,7 +168,7 @@ public class WrapperForPythonDatamodelTranslatorSystemInfo extends SystemInfo {
 	// assistant methods
 
 	//-------------------------------------------------------------------------------------------------
-	private InterfaceModel getHTTPInterfaceForInterfaceBridgeManagement() {
+	private InterfaceModel getHTTPInterfaceForDataModelTranslation() {
 		final String templateName = getSslProperties().isSslEnabled() ? Constants.GENERIC_HTTPS_INTERFACE_TEMPLATE_NAME : Constants.GENERIC_HTTP_INTERFACE_TEMPLATE_NAME;
 
 		final HttpOperationModel initTranslation = new HttpOperationModel.Builder()

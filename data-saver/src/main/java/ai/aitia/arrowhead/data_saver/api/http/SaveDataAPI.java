@@ -52,7 +52,7 @@ public class SaveDataAPI {
 			@ApiResponse(responseCode = Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR, description = Constants.SWAGGER_HTTP_500_MESSAGE, content = {
 					@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessageDTO.class)) })
 	})
-	@PostMapping(path = DataSaverConstants.HTTP_API_OP_SAVE_IPC2581_PATH, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = DataSaverConstants.HTTP_API_OP_SAVE_IPC2581_PATH, consumes = MediaType.APPLICATION_XML_VALUE)
 	public ResponseEntity<Void> saveIpc2581(@RequestBody(required = true) final String data) {
 		logger.debug("saveIpc2581 started...");
 
