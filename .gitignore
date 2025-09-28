@@ -29,10 +29,10 @@ replay_pid*
 /data-model-translator-wrapper/.project
 /data-model-translator-wrapper/.settings
 /data-model-translator-wrapper/target
-/dummy-provider/.classpath
-/dummy-provider/.factorypath
-/dummy-provider/.project
-/dummy-provider/.settings
-/dummy-provider/target
+/data-saver/.classpath
+/data-saver/.factorypath
+/data-saver/.project
+/data-saver/.settings
+/data-saver/target
 /bin/
 /target/
