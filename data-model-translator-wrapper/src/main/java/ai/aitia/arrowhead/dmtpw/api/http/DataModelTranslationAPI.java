@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import ai.aitia.arrowhead.Constants;
-import ai.aitia.arrowhead.dmtpw.WrapperForPythonDatamodelTranslatorConstants;
+import ai.aitia.arrowhead.dmtpw.DataModelTranslatorWrapperConstants;
 import ai.aitia.arrowhead.dmtpw.service.DataModelTranslationService;
 import eu.arrowhead.dto.DataModelTranslationInitRequestDTO;
 import eu.arrowhead.dto.DataModelTranslationResultResponseDTO;
@@ -32,7 +32,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
-@RequestMapping(WrapperForPythonDatamodelTranslatorConstants.HTTP_API_DATA_MODEL_TRANSLATION_BASE_PATH)
+@RequestMapping(DataModelTranslatorWrapperConstants.HTTP_API_DATA_MODEL_TRANSLATION_BASE_PATH)
 @SecurityRequirement(name = Constants.SECURITY_REQ_AUTHORIZATION)
 public class DataModelTranslationAPI {
 
@@ -59,13 +59,13 @@ public class DataModelTranslationAPI {
 			@ApiResponse(responseCode = Constants.HTTP_STATUS_SERVICE_UNAVAILABLE, description = Constants.SWAGGER_HTTP_503_MESSAGE, content = {
 					@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessageDTO.class)) })
 	})
-	@PostMapping(path = WrapperForPythonDatamodelTranslatorConstants.HTTP_API_OP_INIT_TRANSLATION_PATH, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+	@PostMapping(path = DataModelTranslatorWrapperConstants.HTTP_API_OP_INIT_TRANSLATION_PATH, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
 	public @ResponseBody String initTranslation(@RequestBody(required = true) final DataModelTranslationInitRequestDTO dto) {
 		logger.debug("initTranslation started...");
 
 		final String origin = HttpMethod.POST.name() + " "
-				+ WrapperForPythonDatamodelTranslatorConstants.HTTP_API_DATA_MODEL_TRANSLATION_BASE_PATH
-				+ WrapperForPythonDatamodelTranslatorConstants.HTTP_API_OP_INIT_TRANSLATION_PATH;
+				+ DataModelTranslatorWrapperConstants.HTTP_API_DATA_MODEL_TRANSLATION_BASE_PATH
+				+ DataModelTranslatorWrapperConstants.HTTP_API_OP_INIT_TRANSLATION_PATH;
 
 		return translationService.initTranslation(dto, origin).toString();
 	}
@@ -82,13 +82,13 @@ public class DataModelTranslationAPI {
 			@ApiResponse(responseCode = Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR, description = Constants.SWAGGER_HTTP_500_MESSAGE, content = {
 					@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessageDTO.class)) })
 	})
-	@GetMapping(path = WrapperForPythonDatamodelTranslatorConstants.HTTP_API_OP_GET_TRANSLATION_RESULT_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = DataModelTranslatorWrapperConstants.HTTP_API_OP_GET_TRANSLATION_RESULT_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody DataModelTranslationResultResponseDTO getTranslationResult(@RequestParam final UUID taskId) {
 		logger.debug("getTranslationResult started...");
 		
 		final String origin = HttpMethod.POST.name() + " "
-				+ WrapperForPythonDatamodelTranslatorConstants.HTTP_API_DATA_MODEL_TRANSLATION_BASE_PATH
-				+ WrapperForPythonDatamodelTranslatorConstants.HTTP_API_OP_GET_TRANSLATION_RESULT_PATH;
+				+ DataModelTranslatorWrapperConstants.HTTP_API_DATA_MODEL_TRANSLATION_BASE_PATH
+				+ DataModelTranslatorWrapperConstants.HTTP_API_OP_GET_TRANSLATION_RESULT_PATH;
 
 		return translationService.getTranslationResult(taskId, origin);
 	}
@@ -102,7 +102,7 @@ public class DataModelTranslationAPI {
 			@ApiResponse(responseCode = Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR, description = Constants.SWAGGER_HTTP_500_MESSAGE, content = {
 					@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessageDTO.class)) })
 	})
-	@DeleteMapping(path = WrapperForPythonDatamodelTranslatorConstants.HTTP_API_OP_ABORT_TRANSLATION_PATH)
+	@DeleteMapping(path = DataModelTranslatorWrapperConstants.HTTP_API_OP_ABORT_TRANSLATION_PATH)
 	public ResponseEntity<Void> abortTranslation(@RequestParam final UUID taskId) {
 		logger.debug("abortTranslation started...");
 		

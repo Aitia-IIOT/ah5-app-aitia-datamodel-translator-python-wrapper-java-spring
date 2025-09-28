@@ -27,7 +27,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import ai.aitia.arrowhead.Constants;
-import ai.aitia.arrowhead.dmtpw.WrapperForPythonDatamodelTranslatorSystemInfo;
+import ai.aitia.arrowhead.dmtpw.DataModelTranslatorWrapperSystemInfo;
 import eu.arrowhead.common.exception.InvalidParameterException;
 import eu.arrowhead.common.init.ApplicationInitListener;
 import eu.arrowhead.common.model.ServiceModel;
@@ -49,7 +49,7 @@ public class WrapperForPythonDatamodelTranslatorApplicationInitListener extends 
 	protected void customInit(final ContextRefreshedEvent event) throws InterruptedException, ConfigurationException {
 		logger.debug("customInit started...");
 
-		final WrapperForPythonDatamodelTranslatorSystemInfo info = (WrapperForPythonDatamodelTranslatorSystemInfo) sysInfo;
+		final DataModelTranslatorWrapperSystemInfo info = (DataModelTranslatorWrapperSystemInfo) sysInfo;
 
 		try {
 			runInitScript(info.getInitScriptLocation());

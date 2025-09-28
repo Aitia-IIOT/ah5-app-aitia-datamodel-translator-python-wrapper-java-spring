@@ -8,21 +8,21 @@ import ai.aitia.arrowhead.Constants;
 
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
 @ComponentScan({ Constants.BASE_PACKAGE, Constants.COMMON_BASE_PACKAGE })
-public class WrapperForPythonDatamodelTranslatorMain {
+public class DataModelTranslatorWrapperMain {
 
 	//=================================================================================================
 	// methods
 
 	//-------------------------------------------------------------------------------------------------
 	public static void main(String[] args) {
-		SpringApplication.run(WrapperForPythonDatamodelTranslatorMain.class, args);
+		SpringApplication.run(DataModelTranslatorWrapperMain.class, args);
 	}
 	
 	//=================================================================================================
 	// boilerplate
 
 	//-------------------------------------------------------------------------------------------------
-	protected WrapperForPythonDatamodelTranslatorMain() {
+	protected DataModelTranslatorWrapperMain() {
 	}
 
 }

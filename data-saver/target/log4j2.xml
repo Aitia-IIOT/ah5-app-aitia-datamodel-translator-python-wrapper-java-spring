@@ -4,7 +4,7 @@
         <Property name="LOG_PATTERN">
             %d{yyyy-MM-dd HH:mm:ss.SSS}{GMT} %5p ${hostName} --- [%15.15t] %-40.40c{1.} : %m%n%ex
         </Property>
-		<Property name="SYSTEM_NAME">WrapperForPythonDataModelTranslator</Property>
+		<Property name="SYSTEM_NAME">DataSaver</Property>
 		<Property name="CONSOLE_FILE_LEVEL">DEBUG</Property>
 		<Property name="LOG_DIR">.</Property>
     </Properties>
@@ -13,7 +13,7 @@
             <PatternLayout pattern="${LOG_PATTERN}"/>
  			<ThresholdFilter level="${CONSOLE_FILE_LEVEL}" onMatch="ACCEPT" onMismatch="DENY"/>
         </Console>
-		<RollingFile name="FileAppender" fileName="${LOG_DIR}/wrapper-for-python-datamodel-translator.log" filePattern="${LOG_DIR}/interface-translator-to-generic-http-%d{yyyy-MM-dd}-%i.log">
+		<RollingFile name="FileAppender" fileName="${LOG_DIR}/data-saver.log" filePattern="${LOG_DIR}/data-saver-%d{yyyy-MM-dd}-%i.log">
 	    	<PatternLayout>
 	        	<Pattern>${LOG_PATTERN}</Pattern>
 	    	</PatternLayout>

@@ -19,7 +19,7 @@ package ai.aitia.arrowhead.dmtpw.swagger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
-import ai.aitia.arrowhead.dmtpw.WrapperForPythonDatamodelTranslatorSystemInfo;
+import ai.aitia.arrowhead.dmtpw.DataModelTranslatorWrapperSystemInfo;
 import eu.arrowhead.common.swagger.DefaultSwaggerConfig;
 import jakarta.annotation.PostConstruct;
 
@@ -30,7 +30,7 @@ public class SwaggerConfig extends DefaultSwaggerConfig {
 	// members
 	
 	@Autowired
-	private WrapperForPythonDatamodelTranslatorSystemInfo sysInfo;
+	private DataModelTranslatorWrapperSystemInfo sysInfo;
 
 	//=================================================================================================
 	// methods

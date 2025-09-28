@@ -77,13 +77,15 @@ public class DataSaverSystemInfo extends SystemInfo {
 				.path(DataSaverConstants.HTTP_API_OP_SAVE_IPC2581_PATH)
 				.build();
 		
-		final HttpDataModelsOperationModel saveIpc2581DataModel = new HttpDataModelsOperationModel(HttpDataModelsOperationModel.PROP_NAME_INPUT, DataSaverConstants.SERVICE_OP_SAVE_IPC2581_DATA_MODEL_INPUT);
+		final HttpDataModelsOperationModel saveIpc2581DataModel = new HttpDataModelsOperationModel.Builder()
+				.input(DataSaverConstants.SERVICE_OP_SAVE_IPC2581_DATA_MODEL_INPUT)
+				.build();
 
 		return new HttpInterfaceModel.Builder(templateName, getDomainAddress(), getServerPort())
 				.policy(ServiceInterfacePolicy.NONE)
 				.basePath(DataSaverConstants.HTTP_API_SAVE_DATA_BASE_PATH)
 				.operation(DataSaverConstants.SERVICE_OP_SAVE_IPC2581, saveIpc2581)
-				.dataModel(saveIpc2581.path(), saveIpc2581DataModel)
+				.dataModel(DataSaverConstants.SERVICE_OP_SAVE_IPC2581, saveIpc2581DataModel)
 				.build();
 	}
 }

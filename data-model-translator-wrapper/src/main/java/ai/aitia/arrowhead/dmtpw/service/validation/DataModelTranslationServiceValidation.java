@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ai.aitia.arrowhead.dmtpw.WrapperForPythonDatamodelTranslatorSystemInfo;
+import ai.aitia.arrowhead.dmtpw.DataModelTranslatorWrapperSystemInfo;
 import ai.aitia.arrowhead.dmtpw.service.normalization.DataModelTranslationServiceNormalization;
 import eu.arrowhead.common.Utilities;
 import eu.arrowhead.common.exception.InvalidParameterException;
@@ -45,7 +45,7 @@ public class DataModelTranslationServiceValidation {
 	private DataModelIdentifierValidator modelIdValidator;
 	
 	@Autowired
-	private WrapperForPythonDatamodelTranslatorSystemInfo sysInfo;
+	private DataModelTranslatorWrapperSystemInfo sysInfo;
 
 	private final Logger logger = LogManager.getLogger(this.getClass());
 

@@ -1,11 +1,11 @@
 package ai.aitia.arrowhead.dmtpw;
 
-public class WrapperForPythonDatamodelTranslatorConstants {
+public class DataModelTranslatorWrapperConstants {
 
 	//=================================================================================================
 	// members
 
-	public static final String SYSTEM_NAME = "WrapperForPythonDatamodelTranslator";
+	public static final String SYSTEM_NAME = "DataModelTranslatorWrapper";
 	public static final String SYSTEM_VERSION = "1.0.0";
 	public static final String VERSION_DATA_MODEL_TRANSLATION = "1.0.0";
 
@@ -33,7 +33,7 @@ public class WrapperForPythonDatamodelTranslatorConstants {
 	// assistant methods
 
 	//-------------------------------------------------------------------------------------------------
-	private WrapperForPythonDatamodelTranslatorConstants() {
+	private DataModelTranslatorWrapperConstants() {
 		throw new UnsupportedOperationException();
 	}
 }

@@ -24,29 +24,29 @@ import eu.arrowhead.common.service.validation.name.DataModelIdentifierValidator;
 import eu.arrowhead.dto.enums.ServiceInterfacePolicy;
 
 @Component
-public class WrapperForPythonDatamodelTranslatorSystemInfo extends SystemInfo {
+public class DataModelTranslatorWrapperSystemInfo extends SystemInfo {
 
 	//=================================================================================================
 	// members
 
 	private SystemModel systemModel;
 	
-	@Value(WrapperForPythonDatamodelTranslatorConstants.$TRANSLATION_SCRIPT_LOCATION)
+	@Value(DataModelTranslatorWrapperConstants.$TRANSLATION_SCRIPT_LOCATION)
 	private String translationScriptLocation;
 
-	@Value(WrapperForPythonDatamodelTranslatorConstants.$TRANSLATION_INPUT_FOLDER)
+	@Value(DataModelTranslatorWrapperConstants.$TRANSLATION_INPUT_FOLDER)
 	private String inputFolder;
 
-	@Value(WrapperForPythonDatamodelTranslatorConstants.$TRANSLATION_OUTPUT_FOLDER)
+	@Value(DataModelTranslatorWrapperConstants.$TRANSLATION_OUTPUT_FOLDER)
 	private String outputFolder;
 
-	@Value(WrapperForPythonDatamodelTranslatorConstants.$INIT_SCRIPT_LOCATION)
+	@Value(DataModelTranslatorWrapperConstants.$INIT_SCRIPT_LOCATION)
 	private String initScriptLocation;
 
-	@Value(WrapperForPythonDatamodelTranslatorConstants.$MODEL_IDS)
+	@Value(DataModelTranslatorWrapperConstants.$MODEL_IDS)
 	private List<String> modelIds;
 	
-	@Value(WrapperForPythonDatamodelTranslatorConstants.$RESULT_MIME_TYPES)
+	@Value(DataModelTranslatorWrapperConstants.$RESULT_MIME_TYPES)
 	private List<String> resultMimeTypes;
 
 	private boolean initScriptHasRun = false;
@@ -65,7 +65,7 @@ public class WrapperForPythonDatamodelTranslatorSystemInfo extends SystemInfo {
 	//-------------------------------------------------------------------------------------------------
 	@Override
 	public String getSystemName() {
-		return WrapperForPythonDatamodelTranslatorConstants.SYSTEM_NAME;
+		return DataModelTranslatorWrapperConstants.SYSTEM_NAME;
 	}
 
 	//-------------------------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ public class WrapperForPythonDatamodelTranslatorSystemInfo extends SystemInfo {
 		if (systemModel == null) {
 			SystemModel.Builder builder = new SystemModel.Builder()
 					.address(getAddress())
-					.version(WrapperForPythonDatamodelTranslatorConstants.SYSTEM_VERSION);
+					.version(DataModelTranslatorWrapperConstants.SYSTEM_VERSION);
 
 			if (AuthenticationPolicy.CERTIFICATE == this.getAuthenticationPolicy()) {
 				builder = builder.metadata(Constants.METADATA_KEY_X509_PUBLIC_KEY, getPublicKey());
@@ -96,7 +96,7 @@ public class WrapperForPythonDatamodelTranslatorSystemInfo extends SystemInfo {
 
 		final ServiceModel dataModelTranslationService = new ServiceModel.Builder()
 			.serviceDefinition(Constants.SERVICE_DEF_DATA_MODEL_TRANSLATION)
-			.version(WrapperForPythonDatamodelTranslatorConstants.VERSION_DATA_MODEL_TRANSLATION)
+			.version(DataModelTranslatorWrapperConstants.VERSION_DATA_MODEL_TRANSLATION)
 			.metadata(Constants.METADATA_KEY_DATA_MODEL_IDS, getModelIdsWithResultMimeTpyes().keySet())
 			.serviceInterface(getHTTPInterfaceForDataModelTranslation())
 			.build();
@@ -173,22 +173,22 @@ public class WrapperForPythonDatamodelTranslatorSystemInfo extends SystemInfo {
 
 		final HttpOperationModel initTranslation = new HttpOperationModel.Builder()
 				.method(HttpMethod.POST.name())
-				.path(WrapperForPythonDatamodelTranslatorConstants.HTTP_API_OP_INIT_TRANSLATION_PATH)
+				.path(DataModelTranslatorWrapperConstants.HTTP_API_OP_INIT_TRANSLATION_PATH)
 				.build();
 
 		final HttpOperationModel getTranslationResult = new HttpOperationModel.Builder()
 				.method(HttpMethod.GET.name())
-				.path(WrapperForPythonDatamodelTranslatorConstants.HTTP_API_OP_GET_TRANSLATION_RESULT_PATH)
+				.path(DataModelTranslatorWrapperConstants.HTTP_API_OP_GET_TRANSLATION_RESULT_PATH)
 				.build();
 
 		final HttpOperationModel abortTranslation = new HttpOperationModel.Builder()
 				.method(HttpMethod.DELETE.name())
-				.path(WrapperForPythonDatamodelTranslatorConstants.HTTP_API_OP_ABORT_TRANSLATION_PATH)
+				.path(DataModelTranslatorWrapperConstants.HTTP_API_OP_ABORT_TRANSLATION_PATH)
 				.build();
 
 		return new HttpInterfaceModel.Builder(templateName, getDomainAddress(), getServerPort())
 				.policy(ServiceInterfacePolicy.NONE)
-				.basePath(WrapperForPythonDatamodelTranslatorConstants.HTTP_API_DATA_MODEL_TRANSLATION_BASE_PATH)
+				.basePath(DataModelTranslatorWrapperConstants.HTTP_API_DATA_MODEL_TRANSLATION_BASE_PATH)
 				.operation(Constants.SERVICE_OP_DATA_MODEL_TRANSLATOR_INIT_TRANSLATION, initTranslation)
 				.operation(Constants.SERVICE_OP_DATA_MODEL_TRANSLATOR_GET_TRANSLATION_RESULT, getTranslationResult)
 				.operation(Constants.SERVICE_OP_DATA_MODEL_TRANSLATOR_ABORT_TRANSLATION, abortTranslation)
