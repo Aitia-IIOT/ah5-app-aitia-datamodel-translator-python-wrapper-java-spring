@@ -1,5 +1,7 @@
 package ai.aitia.arrowhead.data_saver;
 
+import eu.arrowhead.dto.enums.AuthorizationPolicyType;
+
 public class DataSaverConstants {
 
 	//=================================================================================================
@@ -10,7 +12,11 @@ public class DataSaverConstants {
 	public static final String SAVE_DATA_SERVICE_DEF = "saveData";
 	public static final String VERSION_SAVE_DATA = "1.0.0";
 	public static final String SERVICE_OP_SAVE_IPC2581 = "save-ipc2581";
-	public static final String SERVICE_OP_SAVE_IPC2581_DATA_MODEL_INPUT = "IPC2581";
+	public static final String SERVICE_OP_SAVE_IPC2581_DATA_MODEL_INPUT = "ipc2581";
+	
+	// authorizaton grant
+	public static final String AUTH_GRANT_DESCRIPTION = "can be used by every system in the Local Cloud";
+	public static final String AUTH_GRANT_POLICY_TYPE = AuthorizationPolicyType.ALL.toString();
 	
 	// HTTP API
 	public static final String HTTP_API_SAVE_DATA_BASE_PATH = "/save-data";

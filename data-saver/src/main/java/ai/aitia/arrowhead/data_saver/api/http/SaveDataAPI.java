@@ -29,7 +29,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping(DataSaverConstants.HTTP_API_SAVE_DATA_BASE_PATH)
-@SecurityRequirement(name = Constants.SECURITY_REQ_AUTHORIZATION)
 public class SaveDataAPI {
 
 	//=================================================================================================

@@ -1,3 +1,18 @@
+/*******************************************************************************
+ *
+ * Copyright (c) 2025 AITIA
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ *
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *  	AITIA
+ *
+ *******************************************************************************/
 package ai.aitia.arrowhead.dmtpw.api.http;
 
 import java.util.UUID;
@@ -29,11 +44,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping(DataModelTranslatorWrapperConstants.HTTP_API_DATA_MODEL_TRANSLATION_BASE_PATH)
-@SecurityRequirement(name = Constants.SECURITY_REQ_AUTHORIZATION)
 public class DataModelTranslationAPI {
 
 	//=================================================================================================
@@ -55,8 +68,6 @@ public class DataModelTranslationAPI {
 			@ApiResponse(responseCode = Constants.HTTP_STATUS_BAD_REQUEST, description = Constants.SWAGGER_HTTP_400_MESSAGE, content = {
 					@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessageDTO.class)) }),
 			@ApiResponse(responseCode = Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR, description = Constants.SWAGGER_HTTP_500_MESSAGE, content = {
-					@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessageDTO.class)) }),
-			@ApiResponse(responseCode = Constants.HTTP_STATUS_SERVICE_UNAVAILABLE, description = Constants.SWAGGER_HTTP_503_MESSAGE, content = {
 					@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessageDTO.class)) })
 	})
 	@PostMapping(path = DataModelTranslatorWrapperConstants.HTTP_API_OP_INIT_TRANSLATION_PATH, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
@@ -78,17 +89,16 @@ public class DataModelTranslationAPI {
 			@ApiResponse(responseCode = Constants.HTTP_STATUS_BAD_REQUEST, description = Constants.SWAGGER_HTTP_400_MESSAGE, content = {
 					@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessageDTO.class)) }),
 			@ApiResponse(responseCode = Constants.HTTP_STATUS_NOT_FOUND, description = Constants.SWAGGER_HTTP_404_MESSAGE, content = {
-					@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessageDTO.class)) }),
-			@ApiResponse(responseCode = Constants.HTTP_STATUS_INTERNAL_SERVER_ERROR, description = Constants.SWAGGER_HTTP_500_MESSAGE, content = {
 					@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessageDTO.class)) })
 	})
 	@GetMapping(path = DataModelTranslatorWrapperConstants.HTTP_API_OP_GET_TRANSLATION_RESULT_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody DataModelTranslationResultResponseDTO getTranslationResult(@RequestParam final UUID taskId) {
+	public @ResponseBody DataModelTranslationResultResponseDTO getTranslationResult(@RequestParam final String taskId) {
 		logger.debug("getTranslationResult started...");
-		
-		final String origin = HttpMethod.POST.name() + " "
+
+		final String origin = HttpMethod.GET.name() + " "
 				+ DataModelTranslatorWrapperConstants.HTTP_API_DATA_MODEL_TRANSLATION_BASE_PATH
-				+ DataModelTranslatorWrapperConstants.HTTP_API_OP_GET_TRANSLATION_RESULT_PATH;
+				+ DataModelTranslatorWrapperConstants.HTTP_API_OP_GET_TRANSLATION_RESULT_PATH
+				+ DataModelTranslatorWrapperConstants.HTTP_API_OP_GET_TRANSLATION_RESULT_REQUEST_PARAM.replace("{}", taskId);
 
 		return translationService.getTranslationResult(taskId, origin);
 	}
@@ -103,7 +113,7 @@ public class DataModelTranslationAPI {
 					@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessageDTO.class)) })
 	})
 	@DeleteMapping(path = DataModelTranslatorWrapperConstants.HTTP_API_OP_ABORT_TRANSLATION_PATH)
-	public ResponseEntity<Void> abortTranslation(@RequestParam final UUID taskId) {
+	public ResponseEntity<Void> abortTranslation(@RequestParam final String taskId) {
 		logger.debug("abortTranslation started...");
 		
 		logger.info("abortTranslation is not implemented!");

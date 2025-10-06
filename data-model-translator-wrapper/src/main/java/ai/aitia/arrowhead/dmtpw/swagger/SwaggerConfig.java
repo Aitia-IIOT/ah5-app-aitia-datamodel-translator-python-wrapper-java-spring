@@ -10,8 +10,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *  	AITIA - implementation
- *  	Arrowhead Consortia - conceptualization
+ *  	AITIA
  *
  *******************************************************************************/
 package ai.aitia.arrowhead.dmtpw.swagger;
@@ -19,6 +18,7 @@ package ai.aitia.arrowhead.dmtpw.swagger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
+import ai.aitia.arrowhead.dmtpw.DataModelTranslatorWrapperConstants;
 import ai.aitia.arrowhead.dmtpw.DataModelTranslatorWrapperSystemInfo;
 import eu.arrowhead.common.swagger.DefaultSwaggerConfig;
 import jakarta.annotation.PostConstruct;
@@ -37,7 +37,7 @@ public class SwaggerConfig extends DefaultSwaggerConfig {
 	
 	//-------------------------------------------------------------------------------------------------
 	public SwaggerConfig() {
-		super(null, "1.0.0");
+		super(null, DataModelTranslatorWrapperConstants.SYSTEM_VERSION);
 	}
 	
 	//=================================================================================================

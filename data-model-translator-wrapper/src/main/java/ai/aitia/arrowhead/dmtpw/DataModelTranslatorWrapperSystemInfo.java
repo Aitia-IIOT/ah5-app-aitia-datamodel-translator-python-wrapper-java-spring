@@ -1,5 +1,22 @@
+/*******************************************************************************
+ *
+ * Copyright (c) 2025 AITIA
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ *
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *  	AITIA
+ *
+ *******************************************************************************/
 package ai.aitia.arrowhead.dmtpw;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +29,7 @@ import org.springframework.stereotype.Component;
 
 import ai.aitia.arrowhead.Constants;
 import eu.arrowhead.common.SystemInfo;
+import eu.arrowhead.common.Utilities;
 import eu.arrowhead.common.exception.InvalidParameterException;
 import eu.arrowhead.common.http.filter.authentication.AuthenticationPolicy;
 import eu.arrowhead.common.http.model.HttpInterfaceModel;
@@ -31,17 +49,17 @@ public class DataModelTranslatorWrapperSystemInfo extends SystemInfo {
 
 	private SystemModel systemModel;
 	
-	@Value(DataModelTranslatorWrapperConstants.$TRANSLATION_SCRIPT_LOCATION)
-	private String translationScriptLocation;
+	@Value(DataModelTranslatorWrapperConstants.$PYTHON_LAUNCHER_PATH)
+	private String pythonLauncherPath;
+	
+	@Value(DataModelTranslatorWrapperConstants.$SCRIPT_LOCATION)
+	private String scriptLocation;
 
 	@Value(DataModelTranslatorWrapperConstants.$TRANSLATION_INPUT_FOLDER)
 	private String inputFolder;
 
 	@Value(DataModelTranslatorWrapperConstants.$TRANSLATION_OUTPUT_FOLDER)
 	private String outputFolder;
-
-	@Value(DataModelTranslatorWrapperConstants.$INIT_SCRIPT_LOCATION)
-	private String initScriptLocation;
 
 	@Value(DataModelTranslatorWrapperConstants.$MODEL_IDS)
 	private List<String> modelIds;
@@ -61,12 +79,6 @@ public class DataModelTranslatorWrapperSystemInfo extends SystemInfo {
 
 	//=================================================================================================
 	// methods
-
-	//-------------------------------------------------------------------------------------------------
-	@Override
-	public String getSystemName() {
-		return DataModelTranslatorWrapperConstants.SYSTEM_NAME;
-	}
 
 	//-------------------------------------------------------------------------------------------------
 	@Override
@@ -109,10 +121,6 @@ public class DataModelTranslatorWrapperSystemInfo extends SystemInfo {
 	public Map<List<String>, String> getModelIdsWithResultMimeTpyes() {
 		
 		if (modelIdsWithResultMimeTpyes == null) {
-
-			if (modelIds.size() % 2 != 0) {
-				throw new InvalidParameterException("The list of model ids is not specified correctly");
-			}
 			
 			// normalize model ids
 			final List<String> normalizedModelIds = new ArrayList<String>(modelIds.size());
@@ -120,10 +128,6 @@ public class DataModelTranslatorWrapperSystemInfo extends SystemInfo {
 				final String normalized = modelIdNormalizer.normalize(modelId);
 				modelIdValidator.validateDataModelIdentifier(normalized);
 				normalizedModelIds.add(normalized);
-			}
-		
-			if (resultMimeTypes.size() != normalizedModelIds.size() / 2) {
-				throw new InvalidParameterException("There must be exactly one result mime type specified for each model id pair");
 			}
 
 			modelIdsWithResultMimeTpyes = new HashMap<List<String>, String>(normalizedModelIds.size() / 2);
@@ -133,10 +137,15 @@ public class DataModelTranslatorWrapperSystemInfo extends SystemInfo {
 				if (modelIdsWithResultMimeTpyes.containsKey(List.of(normalizedModelIds.get(i), normalizedModelIds.get(i+1)))) {
 					throw new InvalidParameterException("Duplicated input-output model id pair: " + normalizedModelIds.get(i) + ", " + normalizedModelIds.get(i+1));
 				}
-				modelIdsWithResultMimeTpyes.put(List.of(normalizedModelIds.get(i), normalizedModelIds.get(i+1)), resultMimeTypes.get(j));
+				modelIdsWithResultMimeTpyes.put(List.of(normalizedModelIds.get(i), normalizedModelIds.get(i+1)), resultMimeTypes.get(j).trim().toLowerCase());
 			}
 		}
 		return modelIdsWithResultMimeTpyes;
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	public String getPythonLauncherPath() {
+		return pythonLauncherPath;
 	}
 
 	//-------------------------------------------------------------------------------------------------
@@ -145,13 +154,8 @@ public class DataModelTranslatorWrapperSystemInfo extends SystemInfo {
 	}
 
 	//-------------------------------------------------------------------------------------------------
-	public String getInitScriptLocation() {
-		return initScriptLocation;
-	}
-	
-	//-------------------------------------------------------------------------------------------------
-	public String getTranslationScriptLocation() {
-		return translationScriptLocation;
+	public String getScriptLocation() {
+		return scriptLocation;
 	}
 	
 	//-------------------------------------------------------------------------------------------------
@@ -166,6 +170,59 @@ public class DataModelTranslatorWrapperSystemInfo extends SystemInfo {
 
 	//=================================================================================================
 	// assistant methods
+	
+	//-------------------------------------------------------------------------------------------------
+	@Override
+	protected void customInit() {
+
+		//model ids
+		if (Utilities.isEmpty(modelIds)) {
+			throw new InvalidParameterException("Model ids are missing");
+		}
+		if (modelIds.size() % 2 != 0) {
+			throw new InvalidParameterException("The size of model ids should be an even number");
+		}
+
+		// result mime types
+		if (Utilities.isEmpty(resultMimeTypes)) {
+			throw new InvalidParameterException("Result mime types are missing!");
+		}
+		if (resultMimeTypes.size() != modelIds.size() / 2) {
+			throw new InvalidParameterException("There must be exactly one result mime type specified for each model id pair");
+		}
+		
+		// python launcher path
+		if (Utilities.isEmpty(pythonLauncherPath)) {
+			throw new InvalidParameterException("Python launcher path is missing");
+		}
+		if (!Files.exists(Paths.get(pythonLauncherPath))) {
+			throw new InvalidParameterException("Python launcher path does not exist");
+		}
+		
+		// script location
+		if (Utilities.isEmpty(scriptLocation)) {
+			throw new InvalidParameterException("Script location is missing");
+		}
+		if (!Files.exists(Paths.get(scriptLocation))) {
+			throw new InvalidParameterException("Script location does not exist");
+		}
+		
+		// input folder
+		if (Utilities.isEmpty(inputFolder)) {
+			throw new InvalidParameterException("Input folder location is missing");
+		}
+		if (!Files.exists(Paths.get(inputFolder))) {
+			throw new InvalidParameterException("Input folder location does not exist");
+		}
+		
+		// output folder
+		if (Utilities.isEmpty(outputFolder)) {
+			throw new InvalidParameterException("Output folder location is missing");
+		}
+		if (!Files.exists(Paths.get(outputFolder))) {
+			throw new InvalidParameterException("Output folder location does not exist");
+		}
+	}
 
 	//-------------------------------------------------------------------------------------------------
 	private InterfaceModel getHTTPInterfaceForDataModelTranslation() {

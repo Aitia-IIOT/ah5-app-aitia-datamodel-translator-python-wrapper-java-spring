@@ -10,8 +10,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *  	AITIA - implementation
- *  	Arrowhead Consortia - conceptualization
+ *  	AITIA
  *
  *******************************************************************************/
 package ai.aitia.arrowhead.dmtpw.init;
@@ -23,11 +22,14 @@ import java.util.stream.Collectors;
 
 import javax.naming.ConfigurationException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import ai.aitia.arrowhead.Constants;
+import ai.aitia.arrowhead.dmtpw.DataModelTranslatorWrapperConstants;
 import ai.aitia.arrowhead.dmtpw.DataModelTranslatorWrapperSystemInfo;
+import ai.aitia.arrowhead.dmtpw.service.DataModelTranslationService;
 import eu.arrowhead.common.exception.InvalidParameterException;
 import eu.arrowhead.common.init.ApplicationInitListener;
 import eu.arrowhead.common.model.ServiceModel;
@@ -37,9 +39,16 @@ import eu.arrowhead.dto.AuthorizationPolicyResponseDTO;
 import eu.arrowhead.dto.ServiceInstanceCreateRequestDTO;
 import eu.arrowhead.dto.ServiceInstanceInterfaceRequestDTO;
 import eu.arrowhead.dto.ServiceInstanceResponseDTO;
+import eu.arrowhead.dto.enums.AuthorizationTargetType;
 
 @Component
 public class DataModelTranslatorWrapperApplicationInitListener extends ApplicationInitListener {
+	
+	//=================================================================================================
+	// members
+	
+	@Autowired
+	private DataModelTranslationService service;
 
 	//=================================================================================================
 	// assistant methods
@@ -52,7 +61,7 @@ public class DataModelTranslatorWrapperApplicationInitListener extends Applicati
 		final DataModelTranslatorWrapperSystemInfo info = (DataModelTranslatorWrapperSystemInfo) sysInfo;
 
 		try {
-			runInitScript(info.getInitScriptLocation());
+			runInitScript(info.getPythonLauncherPath(), info.getScriptLocation());
         } catch (final IOException ex) {
 			throw new RuntimeException("Running the initialization python script was unsuccessful: " + ex.getMessage());
         }
@@ -66,14 +75,13 @@ public class DataModelTranslatorWrapperApplicationInitListener extends Applicati
 			logger.info("System {} published {} service(s)", sysInfo.getSystemName(), registeredServices.size());
 		}
 		
-		// grant authorization
-		final AuthorizationGrantRequestDTO payload = new AuthorizationGrantRequestDTO(
-				"LOCAL",
-				"SERVICE_DEF",
-				Constants.SERVICE_DEF_DATA_MODEL_TRANSLATION,
-				"can be used by every system in the local cloud",
-				new AuthorizationPolicyRequestDTO("ALL", null, null),
-				null);
+		final AuthorizationGrantRequestDTO payload = new AuthorizationGrantRequestDTO
+				.Builder(AuthorizationTargetType.SERVICE_DEF)
+				.target(Constants.SERVICE_DEF_DATA_MODEL_TRANSLATION)
+				.description(DataModelTranslatorWrapperConstants.AUTH_GRANT_DESCRIPTION)
+				.defaultPolicy(new AuthorizationPolicyRequestDTO(DataModelTranslatorWrapperConstants.AUTH_GRANT_POLICY_TYPE, null, null))
+				.scopedPolicies(null)
+				.build();
 
 		try {
 			arrowheadHttpService.consumeService(
@@ -82,17 +90,23 @@ public class DataModelTranslatorWrapperApplicationInitListener extends Applicati
 					AuthorizationPolicyResponseDTO.class,
 					payload);
 		} catch (final Exception ex) {
-			ex.printStackTrace();
+			logger.info("Error while consuming {} service's {} operation: " + ex.getMessage(), Constants.SERVICE_DEF_AUTHORIZATION, Constants.SERVICE_OP_GRANT);
 		}
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	@Override
+	protected void customDestroy() {
+		service.RUNNING = false;
 	}
 
 	//-------------------------------------------------------------------------------------------------
-	private void runInitScript(final String initScriptLocation) throws ConfigurationException, InterruptedException, IOException {
+	private void runInitScript(final String pythonLauncherPath, final String initScriptLocation) throws ConfigurationException, InterruptedException, IOException {
 		logger.debug("runInitScript started...");
 
-        try {
-            final ProcessBuilder initScriptProcessBuilder = new ProcessBuilder("python", initScriptLocation);
-            initScriptProcessBuilder.directory(new File(new File(initScriptLocation).getParent()));
+        /*try {
+            final ProcessBuilder initScriptProcessBuilder = new ProcessBuilder(pythonLauncherPath, "-m", DataModelTranslatorWrapperConstants.INIT_MODULE_NAME);
+        	initScriptProcessBuilder.directory(new File(initScriptLocation));
             initScriptProcessBuilder.inheritIO();
             final Process initScriptProcess = initScriptProcessBuilder.start();
             final int exitCode = initScriptProcess.waitFor();
@@ -101,7 +115,7 @@ public class DataModelTranslatorWrapperApplicationInitListener extends Applicati
             }
         } catch (final Exception ex) {
 			throw ex;
-        }
+        }*/
     }
 
 	//-------------------------------------------------------------------------------------------------

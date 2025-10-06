@@ -1,7 +1,23 @@
+/*******************************************************************************
+ *
+ * Copyright (c) 2025 AITIA
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ *
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *  	AITIA
+ *
+ *******************************************************************************/
 package ai.aitia.arrowhead.dmtpw.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Base64;
@@ -19,6 +35,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ai.aitia.arrowhead.dmtpw.DataModelTranslatorWrapperConstants;
 import ai.aitia.arrowhead.dmtpw.DataModelTranslatorWrapperSystemInfo;
 import ai.aitia.arrowhead.dmtpw.service.model.DataModelTranslationTask;
 import ai.aitia.arrowhead.dmtpw.service.validation.DataModelTranslationServiceValidation;
@@ -35,6 +52,8 @@ public class DataModelTranslationService {
 	//=================================================================================================
 	// members
 	
+	public volatile boolean RUNNING = true;
+	
 	@Autowired
 	private DataModelTranslatorWrapperSystemInfo sysInfo;
 
@@ -43,7 +62,7 @@ public class DataModelTranslationService {
 
 	private final BlockingQueue<DataModelTranslationTask> jobQueue = new LinkedBlockingQueue<>();
 	private final Map<UUID, DataModelTranslationTask> jobCache = new ConcurrentHashMap<>();
-	private final Map<UUID, String> fileNameCache = new ConcurrentHashMap<>();
+	private final Map<UUID, String> fileNameCache = new ConcurrentHashMap<>(); 
 
 	private final Logger logger = LogManager.getLogger(this.getClass());
 
@@ -52,20 +71,21 @@ public class DataModelTranslationService {
 
 	//-------------------------------------------------------------------------------------------------
     public UUID initTranslation(final DataModelTranslationInitRequestDTO dto, final String origin) {
-    	logger.debug("initTranslationJob started...");
+    	logger.debug("initTranslation started...");
     	
     	final DataModelTranslationInitRequestDTO normalized = validator.validateAndNormalizeDataModelTranslationInitRequestDTO(dto, origin);
 
         final DataModelTranslationTask job = new DataModelTranslationTask(sysInfo.getModelIdsWithResultMimeTpyes().get(List.of(normalized.inputModelId(), normalized.outputModelId())), normalized.payload());
-        jobQueue.add(job);
         jobCache.put(job.getUuid(), job);
+        jobQueue.add(job);
         return job.getUuid();
     }
 
     //-------------------------------------------------------------------------------------------------
-    public DataModelTranslationResultResponseDTO getTranslationResult(final UUID jobId, final String origin) {
+    public DataModelTranslationResultResponseDTO getTranslationResult(final String jobIdString, final String origin) {
     	logger.debug("getTranslationResult started...");
 
+    	final UUID jobId = validator.validateAndNormalizeJobIdString(jobIdString, origin);
         final DataModelTranslationTask job = jobCache.get(jobId);
         
         if (job == null) {
@@ -85,7 +105,7 @@ public class DataModelTranslationService {
     	job.setStatus(DataModelTranslationTaskStatus.IN_PROGRESS);
 
     	// decode the bytes
-    	final byte[] bytes = Base64.getDecoder().decode(job.getPayload());
+    	final byte[] bytes = Base64.getDecoder().decode(job.getPayload().getBytes(StandardCharsets.UTF_8));
 
     	final String fileName = job.getUuid().toString() + ".xml";
     	try {
@@ -96,7 +116,9 @@ public class DataModelTranslationService {
     		runTranslationScript(job.getUuid().toString());
     	} catch (final Exception ex) {
     		job.setStatus(DataModelTranslationTaskStatus.ERROR);
-    		throw new InternalServerError("An error occured while running the translation script");
+    		job.setPayload(ex.getMessage());
+    		logger.error(ex.getMessage());
+    		throw new InternalServerError("An error occured while running the translation script: " + ex.getMessage());
     	}
 
     	fileNameCache.put(job.getUuid(), fileName);
@@ -108,17 +130,15 @@ public class DataModelTranslationService {
   //-------------------------------------------------------------------------------------------------
     private void runTranslationScript(final String name) throws ConfigurationException, InterruptedException, IOException {
     	
-        try {
-            final ProcessBuilder translationScriptProcessBuilder = new ProcessBuilder("python", sysInfo.getTranslationScriptLocation(), name);
-            translationScriptProcessBuilder.inheritIO();
-            translationScriptProcessBuilder.directory(new File(new File(sysInfo.getTranslationScriptLocation()).getParent()));
-            final Process translationScriptProcess = translationScriptProcessBuilder.start();
-            final int exitCode = translationScriptProcess.waitFor();
-            if (exitCode != 0) {
-            	logger.debug("Translation python script exited with code: " + exitCode);
-            }
-        } catch (final Exception ex) {
-			throw ex;
+    	final ProcessBuilder translationScriptProcessBuilder = new ProcessBuilder(sysInfo.getPythonLauncherPath(), "-m", DataModelTranslatorWrapperConstants.TRANSLATION_MODULE_NAME, name);
+        translationScriptProcessBuilder.inheritIO();
+        translationScriptProcessBuilder.directory(new File(sysInfo.getScriptLocation()));
+        final Process translationScriptProcess = translationScriptProcessBuilder.start();
+        final int exitCode = translationScriptProcess.waitFor();
+        if (exitCode != 0) {
+        	final String error_msg = "Translation python script exited with code: " + exitCode;
+        	logger.error(error_msg);
+        	// TODO: set error message in job
         }
     }
 
@@ -131,7 +151,7 @@ public class DataModelTranslationService {
 
         try {
             final byte[] fileBytes = Files.readAllBytes(Paths.get(sysInfo.getOutputFolder(), filename));
-            return Base64.getEncoder().encodeToString(fileBytes);
+            return new String(Base64.getEncoder().encode(fileBytes), StandardCharsets.UTF_8);
         } catch (final IOException ex) {
         	logger.error(ex.getMessage());
             return null;
@@ -141,7 +161,7 @@ public class DataModelTranslationService {
 	//-------------------------------------------------------------------------------------------------
     private void start() {
         final Thread worker = new Thread(() -> {
-            while (true) {
+            while (RUNNING) {
                 try {
                     final DataModelTranslationTask job = jobQueue.take();
                     doTranslationJob(job);

@@ -10,8 +10,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *  	AITIA - implementation
- *  	Arrowhead Consortia - conceptualization
+ *  	AITIA
  *
  *******************************************************************************/
 package ai.aitia.arrowhead.dmtpw.service.normalization;

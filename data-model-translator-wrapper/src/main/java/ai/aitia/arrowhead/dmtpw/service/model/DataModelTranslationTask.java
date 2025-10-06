@@ -1,3 +1,18 @@
+/*******************************************************************************
+ *
+ * Copyright (c) 2025 AITIA
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ *
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *  	AITIA
+ *
+ *******************************************************************************/
 package ai.aitia.arrowhead.dmtpw.service.model;
 
 import java.util.UUID;
@@ -9,7 +24,7 @@ public class DataModelTranslationTask {
 	//=================================================================================================
 	// members
 
-	private UUID uuid;
+	private final UUID uuid;
 	private DataModelTranslationTaskStatus status;
 	private String resultMimeType;
 	private String payload;
@@ -39,7 +54,7 @@ public class DataModelTranslationTask {
 	}
 
 	//-------------------------------------------------------------------------------------------------
-	public void setStatus(DataModelTranslationTaskStatus status) {
+	public void setStatus(final DataModelTranslationTaskStatus status) {
 		this.status = status;
 	}
 
@@ -49,17 +64,12 @@ public class DataModelTranslationTask {
 	}
 
 	//-------------------------------------------------------------------------------------------------
-	public void setInputModelId(final String resultMimeType) {
-		this.resultMimeType = resultMimeType;
-	}
-
-	//-------------------------------------------------------------------------------------------------
 	public String getPayload() {
 		return payload;
 	}
 
 	//-------------------------------------------------------------------------------------------------
-	public void setPayload(String payload) {
+	public void setPayload(final String payload) {
 		this.payload = payload;
 	}
 }

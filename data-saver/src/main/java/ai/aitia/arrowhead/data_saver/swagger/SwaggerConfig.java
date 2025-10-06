@@ -19,6 +19,7 @@ package ai.aitia.arrowhead.data_saver.swagger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
+import ai.aitia.arrowhead.data_saver.DataSaverConstants;
 import ai.aitia.arrowhead.data_saver.DataSaverSystemInfo;
 import eu.arrowhead.common.swagger.DefaultSwaggerConfig;
 import jakarta.annotation.PostConstruct;
@@ -37,7 +38,7 @@ public class SwaggerConfig extends DefaultSwaggerConfig {
 	
 	//-------------------------------------------------------------------------------------------------
 	public SwaggerConfig() {
-		super(null, "1.0.0");
+		super(null, DataSaverConstants.SYSTEM_VERSION);
 	}
 	
 	//=================================================================================================

@@ -10,14 +10,14 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *  	AITIA - implementation
- *  	Arrowhead Consortia - conceptualization
+ *  	AITIA
  *
  *******************************************************************************/
 package ai.aitia.arrowhead.dmtpw.service.validation;
 
 import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -62,6 +62,17 @@ public class DataModelTranslationServiceValidation {
 		validatDataModelTranslationInitRequestDTO(normalized, origin);
 		return normalized;
 	}
+	
+	//-------------------------------------------------------------------------------------------------
+	public UUID validateAndNormalizeJobIdString(final String uuidString, final String origin) {
+		logger.debug("validateAndNormalizeJobIdString started...");
+		
+		try {
+			return UUID.fromString(uuidString.trim());
+		} catch (final IllegalArgumentException ex) {
+			throw new InvalidParameterException(ex.getMessage(), origin);
+		}
+	}
 
 	//=================================================================================================
 	// assistant methods
@@ -84,12 +95,12 @@ public class DataModelTranslationServiceValidation {
 		
 		// payload
 		if (Utilities.isEmpty(dto.payload())) {
-			throw new InvalidParameterException("Translation payload is empty!", origin);
+			throw new InvalidParameterException("Translation payload is empty", origin);
 		}
 		try {
 			  Base64.getDecoder().decode(dto.payload());
 		} catch (final IllegalArgumentException ex) {
-			throw new InvalidParameterException("Translation payload format is incorrect, must be base64 encoded!", origin);
+			throw new InvalidParameterException("Translation payload format is incorrect, must be Base64 encoded", origin);
 		}
 	}
 }
