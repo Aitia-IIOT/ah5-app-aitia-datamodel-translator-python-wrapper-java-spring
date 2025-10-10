@@ -15,8 +15,10 @@
  *******************************************************************************/
 package ai.aitia.arrowhead.dmtpw.service;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -91,8 +93,15 @@ public class DataModelTranslationService {
         if (job == null) {
         	throw new InvalidParameterException("Invalid UUID", origin);
         }
+        
+        String result = null;
+        
+        if (job.getStatus().equals(DataModelTranslationTaskStatus.ERROR)) {
+        	result = job.getErrorMessage();
+        } else {
+        	result = readTranslatedFile(fileNameCache.get(jobId));
+        }
 
-        final String result = readTranslatedFile(fileNameCache.get(jobId));
         return new DataModelTranslationResultResponseDTO(job.getStatus(), result, job.getResultMimeType());
     }
 
@@ -115,8 +124,7 @@ public class DataModelTranslationService {
     		// run the script
     		runTranslationScript(job.getUuid().toString());
     	} catch (final Exception ex) {
-    		job.setStatus(DataModelTranslationTaskStatus.ERROR);
-    		job.setPayload(ex.getMessage());
+    		job.setStatusToError(ex.getMessage());
     		logger.error(ex.getMessage());
     		throw new InternalServerError("An error occured while running the translation script: " + ex.getMessage());
     	}
@@ -130,15 +138,38 @@ public class DataModelTranslationService {
   //-------------------------------------------------------------------------------------------------
     private void runTranslationScript(final String name) throws ConfigurationException, InterruptedException, IOException {
     	
-    	final ProcessBuilder translationScriptProcessBuilder = new ProcessBuilder(sysInfo.getPythonLauncherPath(), "-m", DataModelTranslatorWrapperConstants.TRANSLATION_MODULE_NAME, name);
+    	final ProcessBuilder translationScriptProcessBuilder = new ProcessBuilder(sysInfo.getPythonLauncherPath(), sysInfo.getTranslationScriptLocation(), name);
         translationScriptProcessBuilder.inheritIO();
-        translationScriptProcessBuilder.directory(new File(sysInfo.getScriptLocation()));
+        translationScriptProcessBuilder.directory(new File(new File(sysInfo.getTranslationScriptLocation()).getParent()));
+
         final Process translationScriptProcess = translationScriptProcessBuilder.start();
+        
+        BufferedReader stdErr = new BufferedReader(new InputStreamReader(translationScriptProcess.getErrorStream()));
+        StringBuilder stdErrMessages = new StringBuilder();
+        String errLine;
+        while ((errLine = stdErr.readLine()) != null) {
+        	stdErrMessages.append(errLine);
+        }
+        
+        BufferedReader stdOut = new BufferedReader(new InputStreamReader(translationScriptProcess.getInputStream()));
+        StringBuilder stdOutMessages = new StringBuilder();
+        String outLine;
+        while ((outLine = stdOut.readLine()) != null) {
+        	stdOutMessages.append(outLine);
+        }
+        
+        logger.info("Python script standard output: " + stdOutMessages);
+        
+        if (!stdErrMessages.isEmpty()) {
+        	throw new InvalidParameterException("Translation python script has thrown an error message: " + stdErrMessages);
+        }
+        
+        
         final int exitCode = translationScriptProcess.waitFor();
         if (exitCode != 0) {
-        	final String error_msg = "Translation python script exited with code: " + exitCode;
-        	logger.error(error_msg);
-        	// TODO: set error message in job
+        	String errorMessage = "Translation python script exited with code: " + exitCode;
+        	logger.error(errorMessage);
+        	throw new InternalServerError(errorMessage);
         }
     }
 

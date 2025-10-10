@@ -52,8 +52,11 @@ public class DataModelTranslatorWrapperSystemInfo extends SystemInfo {
 	@Value(DataModelTranslatorWrapperConstants.$PYTHON_LAUNCHER_PATH)
 	private String pythonLauncherPath;
 	
-	@Value(DataModelTranslatorWrapperConstants.$SCRIPT_LOCATION)
-	private String scriptLocation;
+	@Value(DataModelTranslatorWrapperConstants.$INIT_SCRIPT_LOCATION)
+	private String initScriptLocation;
+	
+	@Value(DataModelTranslatorWrapperConstants.$TRANSLATION_SCRIPT_LOCATION)
+	private String translationScriptLocation;
 
 	@Value(DataModelTranslatorWrapperConstants.$TRANSLATION_INPUT_FOLDER)
 	private String inputFolder;
@@ -154,8 +157,13 @@ public class DataModelTranslatorWrapperSystemInfo extends SystemInfo {
 	}
 
 	//-------------------------------------------------------------------------------------------------
-	public String getScriptLocation() {
-		return scriptLocation;
+	public String getInitScriptLocation() {
+		return initScriptLocation;
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	public String getTranslationScriptLocation() {
+		return translationScriptLocation;
 	}
 	
 	//-------------------------------------------------------------------------------------------------
@@ -199,12 +207,20 @@ public class DataModelTranslatorWrapperSystemInfo extends SystemInfo {
 			throw new InvalidParameterException("Python launcher path does not exist");
 		}
 		
-		// script location
-		if (Utilities.isEmpty(scriptLocation)) {
-			throw new InvalidParameterException("Script location is missing");
+		// init script location
+		if (Utilities.isEmpty(initScriptLocation)) {
+			throw new InvalidParameterException("Init script location is missing");
 		}
-		if (!Files.exists(Paths.get(scriptLocation))) {
-			throw new InvalidParameterException("Script location does not exist");
+		if (!Files.exists(Paths.get(initScriptLocation))) {
+			throw new InvalidParameterException("Init script location does not exist");
+		}
+		
+		// translation script location
+		if (Utilities.isEmpty(translationScriptLocation)) {
+			throw new InvalidParameterException("Translation script location is missing");
+		}
+		if (!Files.exists(Paths.get(translationScriptLocation))) {
+			throw new InvalidParameterException("Translation script location does not exist");
 		}
 		
 		// input folder

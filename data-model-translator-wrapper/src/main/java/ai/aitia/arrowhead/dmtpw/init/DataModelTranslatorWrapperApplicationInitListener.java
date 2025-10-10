@@ -61,7 +61,7 @@ public class DataModelTranslatorWrapperApplicationInitListener extends Applicati
 		final DataModelTranslatorWrapperSystemInfo info = (DataModelTranslatorWrapperSystemInfo) sysInfo;
 
 		try {
-			runInitScript(info.getPythonLauncherPath(), info.getScriptLocation());
+			runInitScript(info.getPythonLauncherPath(), info.getTranslationScriptLocation());
         } catch (final IOException ex) {
 			throw new RuntimeException("Running the initialization python script was unsuccessful: " + ex.getMessage());
         }
@@ -105,8 +105,8 @@ public class DataModelTranslatorWrapperApplicationInitListener extends Applicati
 		logger.debug("runInitScript started...");
 
         /*try {
-            final ProcessBuilder initScriptProcessBuilder = new ProcessBuilder(pythonLauncherPath, "-m", DataModelTranslatorWrapperConstants.INIT_MODULE_NAME);
-        	initScriptProcessBuilder.directory(new File(initScriptLocation));
+            final ProcessBuilder initScriptProcessBuilder = new ProcessBuilder(pythonLauncherPath, initScriptLocation);
+        	initScriptProcessBuilder.directory(new File(new File(initScriptLocation).getParent()));
             initScriptProcessBuilder.inheritIO();
             final Process initScriptProcess = initScriptProcessBuilder.start();
             final int exitCode = initScriptProcess.waitFor();

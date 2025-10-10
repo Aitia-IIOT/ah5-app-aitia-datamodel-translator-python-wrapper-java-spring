@@ -28,6 +28,7 @@ public class DataModelTranslationTask {
 	private DataModelTranslationTaskStatus status;
 	private String resultMimeType;
 	private String payload;
+	private String errorMessage = null;
 
 	//=================================================================================================
 	// methods
@@ -57,6 +58,12 @@ public class DataModelTranslationTask {
 	public void setStatus(final DataModelTranslationTaskStatus status) {
 		this.status = status;
 	}
+	
+	//-------------------------------------------------------------------------------------------------
+	public void setStatusToError(final String errorMessage) {
+		this.status = DataModelTranslationTaskStatus.ERROR;
+		this.errorMessage = errorMessage;
+	}
 
 	//-------------------------------------------------------------------------------------------------
 	public String getResultMimeType() {
@@ -67,9 +74,9 @@ public class DataModelTranslationTask {
 	public String getPayload() {
 		return payload;
 	}
-
+	
 	//-------------------------------------------------------------------------------------------------
-	public void setPayload(final String payload) {
-		this.payload = payload;
+	public String getErrorMessage() {
+		return this.errorMessage;
 	}
 }

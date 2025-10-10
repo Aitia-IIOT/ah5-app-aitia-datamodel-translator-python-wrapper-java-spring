@@ -37,8 +37,10 @@ public class DataModelTranslatorWrapperConstants {
 	public static final String HTTP_API_OP_ABORT_TRANSLATION_PATH = "/abort-translation";
 
 	// translation
-	public static final String SCRIPT_LOCATION = "script.location";
-	public static final String $SCRIPT_LOCATION = "${" + SCRIPT_LOCATION + ":" + "}";
+	public static final String INIT_SCRIPT_LOCATION = "init.script.location";
+	public static final String $INIT_SCRIPT_LOCATION = "${" + INIT_SCRIPT_LOCATION + ":" + "}";
+	public static final String TRANSLATION_SCRIPT_LOCATION = "init.script.location";
+	public static final String $TRANSLATION_SCRIPT_LOCATION = "${" + TRANSLATION_SCRIPT_LOCATION + ":" + "}";
 	public static final String TRANSLATION_INPUT_FOLDER= "translation.script.input.folder";
 	public static final String $TRANSLATION_INPUT_FOLDER = "${" + TRANSLATION_INPUT_FOLDER + ":" + "}";
 	public static final String TRANSLATION_OUTPUT_FOLDER= "translation.script.output.folder";
@@ -49,10 +51,6 @@ public class DataModelTranslatorWrapperConstants {
 	public static final String $RESULT_MIME_TYPES = "#{'${" + RESULT_MIME_TYPES + ":" +  "}'.split(',')}";
 	public static final String PYTHON_LAUNCHER_PATH = "python.launcher.path";
 	public static final String $PYTHON_LAUNCHER_PATH = "${" + PYTHON_LAUNCHER_PATH + ":" + "}";
-	
-	// module names of the scripts
-	public static final String INIT_MODULE_NAME = "src.automated.map_gen";
-	public static final String TRANSLATION_MODULE_NAME = "src.scripts.translation.tag_swap2";
 
 	//=================================================================================================
 	// assistant methods
