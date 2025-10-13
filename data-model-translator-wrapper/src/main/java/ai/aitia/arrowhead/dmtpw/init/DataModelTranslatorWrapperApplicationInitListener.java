@@ -97,7 +97,7 @@ public class DataModelTranslatorWrapperApplicationInitListener extends Applicati
 	//-------------------------------------------------------------------------------------------------
 	@Override
 	protected void customDestroy() {
-		service.RUNNING = false;
+		service.stopRunning();
 	}
 
 	//-------------------------------------------------------------------------------------------------
@@ -106,7 +106,7 @@ public class DataModelTranslatorWrapperApplicationInitListener extends Applicati
 
         try {
         	final ProcessBuilder initScriptProcessBuilder = new ProcessBuilder(pythonLauncherPath, initScriptLocation);
-        	initScriptProcessBuilder.directory(new File(new File(initScriptLocation).getParent()));
+        	initScriptProcessBuilder.directory(new File(initScriptLocation).getParentFile());
             initScriptProcessBuilder.inheritIO();
             final Process initScriptProcess = initScriptProcessBuilder.start();
             final int exitCode = initScriptProcess.waitFor();

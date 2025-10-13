@@ -53,7 +53,7 @@ public class DataModelTranslationService {
 	//=================================================================================================
 	// members
 	
-	public volatile boolean RUNNING = true;
+	private volatile boolean RUNNING = true;
 	
 	@Autowired
 	private DataModelTranslatorWrapperSystemInfo sysInfo;
@@ -95,7 +95,7 @@ public class DataModelTranslationService {
         
         String result = null;
         
-        if (job.getStatus().equals(DataModelTranslationTaskStatus.ERROR)) {
+        if (job.getStatus() == DataModelTranslationTaskStatus.ERROR) {
         	result = job.getErrorMessage();
         } else {
         	result = readTranslatedFile(fileNameCache.get(jobId));
@@ -139,22 +139,26 @@ public class DataModelTranslationService {
     	
     	final ProcessBuilder translationScriptProcessBuilder = new ProcessBuilder(sysInfo.getPythonLauncherPath(), sysInfo.getTranslationScriptLocation(), name);
         translationScriptProcessBuilder.inheritIO();
-        translationScriptProcessBuilder.directory(new File(new File(sysInfo.getTranslationScriptLocation()).getParent()));
+        translationScriptProcessBuilder.directory(new File(sysInfo.getTranslationScriptLocation()).getParentFile());
 
         final Process translationScriptProcess = translationScriptProcessBuilder.start();
         
-        BufferedReader stdErr = new BufferedReader(new InputStreamReader(translationScriptProcess.getErrorStream()));
-        StringBuilder stdErrMessages = new StringBuilder();
-        String errLine;
-        while ((errLine = stdErr.readLine()) != null) {
-        	stdErrMessages.append(errLine);
-        }
+        final StringBuilder stdOutMessages = new StringBuilder();
+        final StringBuilder stdErrMessages = new StringBuilder();
         
-        BufferedReader stdOut = new BufferedReader(new InputStreamReader(translationScriptProcess.getInputStream()));
-        StringBuilder stdOutMessages = new StringBuilder();
-        String outLine;
-        while ((outLine = stdOut.readLine()) != null) {
-        	stdOutMessages.append(outLine);
+        try (
+        	final BufferedReader stdErr = new BufferedReader(new InputStreamReader(translationScriptProcess.getErrorStream()));
+            final BufferedReader stdOut = new BufferedReader(new InputStreamReader(translationScriptProcess.getInputStream()));
+        ) {
+            String errLine;
+            while ((errLine = stdErr.readLine()) != null) {
+            	stdErrMessages.append(errLine);
+            }
+            
+            String outLine;
+            while ((outLine = stdOut.readLine()) != null) {
+            	stdOutMessages.append(outLine);
+            }
         }
         
         logger.info("Python script standard output: " + stdOutMessages);
@@ -163,10 +167,9 @@ public class DataModelTranslationService {
         	throw new InvalidParameterException("Translation python script has thrown an error message: " + stdErrMessages);
         }
         
-        
         final int exitCode = translationScriptProcess.waitFor();
         if (exitCode != 0) {
-        	String errorMessage = "Translation python script exited with code: " + exitCode;
+        	final String errorMessage = "Translation python script exited with code: " + exitCode;
         	logger.error(errorMessage);
         	throw new InternalServerError(errorMessage);
         }
@@ -208,5 +211,13 @@ public class DataModelTranslationService {
     @PostConstruct
     private void init() {
         start();
+    }
+    
+	//=================================================================================================
+	// boilerplate
+
+    //-------------------------------------------------------------------------------------------------
+    public void stopRunning() {
+    	this.RUNNING = false;
     }
 }

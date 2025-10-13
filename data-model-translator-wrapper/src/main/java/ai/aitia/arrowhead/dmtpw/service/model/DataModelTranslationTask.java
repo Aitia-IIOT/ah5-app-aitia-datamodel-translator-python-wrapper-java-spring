@@ -26,8 +26,8 @@ public class DataModelTranslationTask {
 
 	private final UUID uuid;
 	private DataModelTranslationTaskStatus status;
-	private String resultMimeType;
-	private String payload;
+	private final String resultMimeType;
+	private final String payload;
 	private String errorMessage = null;
 
 	//=================================================================================================
