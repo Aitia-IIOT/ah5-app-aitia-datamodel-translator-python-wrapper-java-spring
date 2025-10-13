@@ -24,6 +24,7 @@ hs_err_pid*
 replay_pid*
 /.project
 /.settings
+/.classpath
 /data-model-translator-wrapper/.classpath
 /data-model-translator-wrapper/.factorypath
 /data-model-translator-wrapper/.project
