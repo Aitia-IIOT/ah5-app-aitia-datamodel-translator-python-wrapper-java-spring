@@ -39,7 +39,7 @@ public class DataModelTranslatorWrapperConstants {
 	// translation
 	public static final String INIT_SCRIPT_LOCATION = "init.script.location";
 	public static final String $INIT_SCRIPT_LOCATION = "${" + INIT_SCRIPT_LOCATION + ":" + "}";
-	public static final String TRANSLATION_SCRIPT_LOCATION = "init.script.location";
+	public static final String TRANSLATION_SCRIPT_LOCATION = "translation.script.location";
 	public static final String $TRANSLATION_SCRIPT_LOCATION = "${" + TRANSLATION_SCRIPT_LOCATION + ":" + "}";
 	public static final String TRANSLATION_INPUT_FOLDER= "translation.script.input.folder";
 	public static final String $TRANSLATION_INPUT_FOLDER = "${" + TRANSLATION_INPUT_FOLDER + ":" + "}";

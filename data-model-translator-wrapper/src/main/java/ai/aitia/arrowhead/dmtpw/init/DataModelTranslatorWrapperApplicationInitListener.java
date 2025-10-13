@@ -104,8 +104,8 @@ public class DataModelTranslatorWrapperApplicationInitListener extends Applicati
 	private void runInitScript(final String pythonLauncherPath, final String initScriptLocation) throws ConfigurationException, InterruptedException, IOException {
 		logger.debug("runInitScript started...");
 
-        /try {
-            final ProcessBuilder initScriptProcessBuilder = new ProcessBuilder(pythonLauncherPath, initScriptLocation);
+        try {
+        	final ProcessBuilder initScriptProcessBuilder = new ProcessBuilder(pythonLauncherPath, initScriptLocation);
         	initScriptProcessBuilder.directory(new File(new File(initScriptLocation).getParent()));
             initScriptProcessBuilder.inheritIO();
             final Process initScriptProcess = initScriptProcessBuilder.start();
