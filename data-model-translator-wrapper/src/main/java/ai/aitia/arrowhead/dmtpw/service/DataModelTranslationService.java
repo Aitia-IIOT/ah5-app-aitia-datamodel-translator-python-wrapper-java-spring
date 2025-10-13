@@ -37,7 +37,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ai.aitia.arrowhead.dmtpw.DataModelTranslatorWrapperConstants;
 import ai.aitia.arrowhead.dmtpw.DataModelTranslatorWrapperSystemInfo;
 import ai.aitia.arrowhead.dmtpw.service.model.DataModelTranslationTask;
 import ai.aitia.arrowhead.dmtpw.service.validation.DataModelTranslationServiceValidation;
