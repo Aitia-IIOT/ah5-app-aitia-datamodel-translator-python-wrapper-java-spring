@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>ai.aitia.arrowhead</groupId>
+		<artifactId>arrowhead-app-datamodel-translator-python-wrapper</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<artifactId>data-model-translator-wrapper</artifactId>
+	<packaging>jar</packaging>
+	<name>Aitia Wrapper for Python Datamodel Translator</name>
+	<description>Aitia Wrapper for Python Datamodel Translator using Spring Boot</description>
+	
+	<url>https://github.com/Aitia-IIOT/ah5-app-aitia-datamodel-translator-python-wrapper-java-spring</url>
+	<licenses>
+		<license>
+	     	<name>Eclipse Public License - v 2.0</name>
+	     	<url>https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt</url>
+	   </license>
+	</licenses>
+
+	<properties>
+		<mvn.resources.version>3.3.1</mvn.resources.version>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${mvn.resources.version}</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources</directory>
+									<includes>
+										<include>application.properties</include>
+										<include>log4j2.xml</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
