@@ -1,4 +1,4 @@
-# DataModelTranslationWrapper for Arrowhed 5
+# DataModelTranslationWrapper for Arrowhead 5
 
 This project contains two Application systems providing the following functionalities:
 1. *DataModelTranslationWrapper*: Provides a dataModelTranslation service, where the translation is performed using python scripts from an outer source.
