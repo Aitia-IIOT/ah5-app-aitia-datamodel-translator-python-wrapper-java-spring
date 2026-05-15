@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import ai.aitia.arrowhead.Constants;
 import eu.arrowhead.common.SystemInfo;
 import eu.arrowhead.common.http.filter.authentication.AuthenticationPolicy;
-import eu.arrowhead.common.http.model.HttpDataModelsOperationModel;
+import eu.arrowhead.common.http.model.DataModelsOperationModel;
 import eu.arrowhead.common.http.model.HttpInterfaceModel;
 import eu.arrowhead.common.http.model.HttpOperationModel;
 import eu.arrowhead.common.model.InterfaceModel;
@@ -77,7 +77,7 @@ public class DataSaverSystemInfo extends SystemInfo {
 				.path(DataSaverConstants.HTTP_API_OP_SAVE_IPC2581_PATH)
 				.build();
 		
-		final HttpDataModelsOperationModel saveIpc2581DataModel = new HttpDataModelsOperationModel.Builder()
+		final DataModelsOperationModel saveIpc2581DataModel = new DataModelsOperationModel.Builder()
 				.input(DataSaverConstants.SERVICE_OP_SAVE_IPC2581_DATA_MODEL_INPUT)
 				.build();
 
