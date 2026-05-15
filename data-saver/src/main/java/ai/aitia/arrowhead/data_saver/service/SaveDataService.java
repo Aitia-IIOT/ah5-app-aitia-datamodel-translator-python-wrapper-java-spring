@@ -20,8 +20,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Random;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,7 +52,7 @@ public class SaveDataService {
 	public void saveIpc2581(final String data, final String origin) {
 		logger.debug("SaveDataService.saveIpc2581 started...");
 		
-		final String fileName = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".bin";
+		final String fileName = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + "_" + new SecureRandom().nextInt(1000000) + ".bin";
 		
         try {
             Files.writeString(Paths.get(saveLocation, fileName), data);
