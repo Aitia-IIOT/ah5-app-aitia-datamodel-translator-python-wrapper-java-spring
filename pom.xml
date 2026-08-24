@@ -25,7 +25,7 @@
 	</licenses>
 	
 	<properties>
-		<arrowhead.framework.version>5.2.1</arrowhead.framework.version>
+		<arrowhead.framework.version>5.2.2</arrowhead.framework.version>
 		<aitia.common.version>1.0.3</aitia.common.version>
 	</properties>
 
